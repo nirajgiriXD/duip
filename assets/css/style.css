@@ -1,7 +1,32 @@
+/* General CSS */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	background-color: #F6F8FB;
+}
+
 main {
 	width: 100vw;
-	height: 100vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+/* Custom Class CSS */
+.mf-container {
+	min-width: 350px;
+	border-radius: 8px;
+	background-color: #FFFFFF;
+}
+
+.mf-shadow {
+	box-shadow: rgba(189, 189, 189, 0.2) 0px 8px 24px;
 }
