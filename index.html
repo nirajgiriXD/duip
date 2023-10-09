@@ -17,6 +17,117 @@
 	<link rel="icon" type="image/x-icon" href="/assets/img/logo.png">
 </head>
 <body>
+	<main class="container py-4">
+		<div class="mf-container mf-shadow p-4">
+			<form>
+				<!-- Name -->
+				<div class="d-flex">
+					<div class="mb-3 w-100">
+						<label for="mf-name-first" class="form-label">First name</label>
+						<input type="text" class="form-control" id="mf-name-first" name="mf-name-first">
+					</div>
+	
+					<!-- Adding spacing -->
+					<span class="pe-2"></span>
+	
+					<div class="mb-3 w-100">
+						<label for="mf-name-last" class="form-label">Last name</label>
+						<input type="text" class="form-control" id="mf-name-last" name="mf-name-last">
+					</div>
+				</div>
+				
+				<!-- Age -->
+				<div class="d-flex">
+					<div class="mb-3 w-100">
+						<label for="mf-age-min" class="form-label">Age (min)</label>
+						<input type="number" class="form-control" id="mf-age-min" name="mf-age-min">
+					</div>
+	
+					<!-- Adding spacing -->
+					<span class="pe-2"></span>
+	
+					<div class="mb-3 w-100">
+						<label for="mf-age-max" class="form-label">Age (max)</label>
+						<input type="number" class="form-control" id="mf-age-max" name="mf-age-max">
+					</div>
+				</div>
+	
+				<!-- Email -->
+				<div class="mb-3">
+					<label for="mf-email" class="form-label">Email</label>
+					<input type="email" class="form-control" id="mf-email" name="mf-email">
+				</div>
+
+				<!-- Phone -->
+				<div class="mb-3">
+					<label for="mf-phone" class="form-label">Phone</label>
+					<input type="number" class="form-control" id="mf-phone" name="mf-phone">
+				</div>
+
+				<!-- Location -->
+				<div class="mb-3">
+					<label for="mf-location" class="form-label">Location</label>
+					<input type="text" class="form-control" id="mf-location" name="mf-location">
+				</div>
+
+				<!-- Platform To Search -->
+				<div class="mb-3">
+					<label class="form-label">Platforms</label>
+					<div class="d-flex">
+						<div class="form-check pe-3">
+							<input class="form-check-input mf-platform" type="checkbox" value="all" id="mf-platform-all" checked>
+							<label class="form-check-label" for="mf-platform-all">All</label>
+						</div>
+						<div class="form-check pe-3">
+							<input class="form-check-input mf-platform" type="checkbox" value="facebook" id="mf-platform-facebook">
+							<label class="form-check-label" for="mf-platform-facebook">Facebook</label>
+						</div>
+						<div class="form-check pe-3">
+							<input class="form-check-input mf-platform" type="checkbox" value="instagram" id="mf-platform-instagram">
+							<label class="form-check-label" for="mf-platform-instagram">Instagram</label>
+						</div>
+						<div class="form-check pe-3">
+							<input class="form-check-input mf-platform" type="checkbox" value="linkedin" id="mf-platform-linkedin">
+							<label class="form-check-label" for="mf-platform-linkedin">LinkedIn</label>
+						</div>
+						<div class="form-check pe-3">
+							<input class="form-check-input mf-platform" type="checkbox" value="twitter" id="mf-platform-twitter">
+							<label class="form-check-label" for="mf-platform-twitter">Twitter</label>
+						</div>
+						<div class="form-check pe-3">
+							<input class="form-check-input mf-platform" type="checkbox" value="github" id="mf-platform-github">
+							<label class="form-check-label" for="mf-platform-github">GitHub</label>
+						</div>
+					</div>
+				</div>
+
+				<!-- Topics of Interest -->
+				<div class="mb-3">
+					<label class="form-label">Interests</label>
+					<div class="d-flex">
+						<div class="form-check pe-3">
+							<input class="form-check-input mf-interest" type="checkbox" value="all" id="mf-interest-all" checked>
+							<label class="form-check-label" for="mf-interest-all">All</label>
+						</div>
+						<div class="form-check pe-3">
+							<input class="form-check-input mf-interest" type="checkbox" value="movie" id="mf-interest-movie">
+							<label class="form-check-label" for="mf-interest-movie">Movie</label>
+						</div>
+						<div class="form-check pe-3">
+							<input class="form-check-input mf-interest" type="checkbox" value="sport" id="mf-interest-sport">
+							<label class="form-check-label" for="mf-interest-sport">Sport</label>
+						</div>
+					</div>
+				</div>
+	
+				<!-- Form Submit Button -->
+				<div class="d-flex justify-content-end">
+					<button type="submit" class="btn btn-primary">Search</button>
+				</div>
+			</form>
+		</div>
+	</main>
+
 	<!-- External Dependencies -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
 </body>
