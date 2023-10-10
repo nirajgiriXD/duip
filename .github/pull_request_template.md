@@ -1,12 +1,3 @@
----
-name: Pull Request
-about: Create a report to help review PR
-title: ""
-labels: ""
-priority: ""
-assignees: ""
----
-
 ## Description
 
 A clear and concise description of what has been done on the PR.
