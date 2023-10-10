@@ -10,6 +10,7 @@ html {
 }
 
 body {
+	width: 100vw;
 	background-color: #F6F8FB;
 }
 
@@ -29,4 +30,15 @@ main {
 
 .mf-shadow {
 	box-shadow: rgba(189, 189, 189, 0.2) 0px 8px 24px;
+}
+
+.mf-flex {
+	display: flex;
+}
+
+/* Media Query */
+@media screen and (max-width:576px) {
+	.mf-flex {
+		display: block;
+	}
 }
