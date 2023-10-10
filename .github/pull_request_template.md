@@ -1,30 +1,39 @@
+---
+name: Pull Request
+about: Create a report to help review PR
+title: ""
+labels: ""
+priority: ""
+assignees: ""
+---
+
 ## Description
 
-<!-- Add PR description that summarizes the work that you have done. -->
+A clear and concise description of what has been done on the PR.
 
 ---
 
-## Additional Information
+## Additional context
 
-<!-- If needed add additional information related to PR. -->
-
----
-
-## Preview
-
-<!-- Add screenshot or a screen recording to show case your work. -->
+If required, add additional information related to the PR.
 
 ---
 
-## Testing Instruction
+## Screenshots / Screencast
 
-<!-- Add testing instruction that will help tester perform better QA -->
+If applicable, add screenshots/screencast to help explain the PR.
+
+---
+
+## Testing instruction
+
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
 
 ---
 
 ## Issue
 
-Issue Number: #
-
-- [ ] Fixes
-- [ ] Partially fixes
+- [ ] Fixes - #
+- [ ] Partially fixes - #
