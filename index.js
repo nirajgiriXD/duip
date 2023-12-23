@@ -1,76 +1,153 @@
-const puppeteer = require("puppeteer-extra");
-const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+/**
+ * External dependencies.
+ */
 const yargs = require("yargs");
-
-const argv = yargs
-  .option("display-name", {
-    describe: "Display Name",
-    demandOption: false, // Make this option required
-    type: "string", // Specify the type of the option
-  })
-  .option("user-name", {
-    describe: "Username",
-    demandOption: false,
-    type: "string",
-  })
-  .option("email", {
-    describe: "Email",
-    demandOption: false,
-    type: "string",
-  })
-  .option("phone", {
-    describe: "Phone",
-    demandOption: false,
-    type: "string",
-  })
-  .option("address", {
-    describe: "Address",
-    demandOption: false,
-    type: "string",
-  })
-  .option("organization", {
-    describe: "Organization",
-    demandOption: false,
-    type: "string",
-  }).argv;
-
-// Access the values using argv object
-const display_name = argv["display-name"];
-const user_name = argv["user-name"];
-const email = argv["email"];
-const phone = argv["phone"];
-const address = argv["address"];
-const organization = argv["organization"];
-
-console.log("Display Name:", display_name);
-console.log("Username:", user_name);
-console.log("Email:", email);
-console.log("Phone:", phone);
-console.log("Address:", address);
-console.log("Organization:", organization);
-
-const searchQuery =
-  "https://www.google.com/search?q=" +
-  // Sitename
-  "site%3A" +
-  '"sitename.com"' +
-  // Text that must be included
-  "+intext%3A" +
-  '"musIncludeText"';
+const puppeteer = require("puppeteer-extra");
+const stealthPluginPuppeteer = require("puppeteer-extra-plugin-stealth");
 
 /**
- * Puppeteer
+ * Main class of the application responsible for initializing and starting the application.
  */
-(async () => {
-  puppeteer.use(StealthPlugin());
-  const browser = await puppeteer.launch({
-    headless: false,
-    // args: ["--proxy-server=http://123.123.123.123:8080"],
-    // executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
-    // userDataDir: "C:/Users/niraj/AppData/Local/Google/Chrome/User Data/Default",
-  });
-  const page = await browser.newPage();
+class ProfileHunter {
+  constructor() {
+    // Call the main function.
+    this.main();
+  }
 
-  await page.goto(searchQuery);
-  // await browser.close();
-})();
+  /**
+   * Manages the overall application lifecycle.
+   */
+  main() {
+    // Initialize data members.
+    this.handleSearchArguments();
+
+    // Check whether any arguments were present.
+    if (!this.hasArguments()) {
+      console.log("Error: Minimum one argument expected, received none.");
+      return;
+    }
+
+    // Show query for debugging.
+    console.log(this.getSearchQuery());
+
+    this.handleCrawl(this.getSearchQuery());
+  }
+
+  /**
+   * Handle arguments received from CLI.
+   */
+  handleSearchArguments() {
+    const argv = yargs
+      .option("name", {
+        describe: "Display Name",
+        demandOption: false, // Make this option required
+        type: "string", // Specify the type of the option
+      })
+      .option("username", {
+        describe: "Username",
+        demandOption: false,
+        type: "string",
+      })
+      .option("email", {
+        describe: "Email",
+        demandOption: false,
+        type: "string",
+      })
+      .option("phone", {
+        describe: "Phone",
+        demandOption: false,
+        type: "string",
+      })
+      .option("address", {
+        describe: "Address",
+        demandOption: false,
+        type: "string",
+      })
+      .option("site", {
+        describe: "Site",
+        demandOption: false,
+        type: "string",
+      })
+      .option("organization", {
+        describe: "Organization",
+        demandOption: false,
+        type: "string",
+      }).argv;
+
+    // Initialize data members using argv object.
+    this.name = argv["name"];
+    this.username = argv["username"];
+    this.email = argv["email"];
+    this.phone = argv["phone"];
+    this.address = argv["address"];
+    this.site = argv["site"];
+    this.organization = argv["organization"];
+  }
+
+  /**
+   * Checks whether any arguments were received.
+   * @returns boolean True if any argument, else false.
+   */
+  hasArguments() {
+    return this.name ||
+      this.username ||
+      this.email ||
+      this.phone ||
+      this.address ||
+      this.site ||
+      this.organization
+      ? true
+      : false;
+  }
+
+  /**
+   * @todo Improve search query
+   * @returns string Search Query
+   */
+  getSearchQuery() {
+    const initialQuery = "https://www.google.com/search?q=";
+    let finalQuery = initialQuery;
+
+    finalQuery = this.site
+      ? finalQuery === initialQuery
+        ? `${finalQuery}site%3A${this.site}`
+        : `${finalQuery}+site%3A${this.site}`
+      : finalQuery;
+
+    finalQuery = this.name
+      ? finalQuery === initialQuery
+        ? `${finalQuery}intext%3A${this.name}`
+        : `${finalQuery}+intext%3A${this.name}`
+      : finalQuery;
+
+    finalQuery = this.username
+      ? finalQuery === initialQuery
+        ? `${finalQuery}inurl%3A${this.username}`
+        : `${finalQuery}+inurl%3A${this.username}`
+      : finalQuery;
+
+    return finalQuery;
+  }
+
+  /**
+   * @todo Logic to handle search query result
+   * @returns string Search Query
+   */
+  async handleCrawl(searchQuery) {
+    puppeteer.use(stealthPluginPuppeteer());
+    const browser = await puppeteer.launch({
+      headless: false,
+      // args: [],
+      // userDataDir: "",
+      // executablePath: "",
+    });
+    const page = await browser.newPage();
+
+    await page.goto(searchQuery);
+
+    // Do not close browser after search is complete.
+    // await browser.close();
+  }
+}
+
+new ProfileHunter();
