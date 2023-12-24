@@ -1,6 +1,6 @@
-# Profile Hunter
+# DUIP
 
-Profile Hunter is a powerful and efficient tool designed to simplify the process of finding information about individuals across various platforms. Whether you're looking for colleagues, professionals, or friends, our tool provides a seamless experience to discover and connect with people.
+DUIP (`Discover User Internet Profile`) is a powerful and efficient tool designed to simplify the process of finding information about individuals across various platforms. Whether you're looking for colleagues, professionals, or friends, DUIP provides a seamless experience to discover and connect with people.
 
 ## Key Features
 
@@ -45,7 +45,7 @@ Profile Hunter is a powerful and efficient tool designed to simplify the process
   - Run the following command:
 
 ```bash
-git clone https://github.com/nirajgiriXD/profile-hunter.git
+git clone https://github.com/nirajgiriXD/duip.git
 ```
 
 This will clone the repository to your local machine.
@@ -65,13 +65,13 @@ This command installs the required packages specified in the `package.json` file
 **4. Run the application:**
 
 ```bash
-node profile-hunter.js --name=<name> --username=<username> --email=<email> --phone=<phone> --site=<site> --address=<address> --oraganization=<organization>
+node duip.js --name=<name> --username=<username> --email=<email> --phone=<phone> --site=<site> --address=<address> --oraganization=<organization>
 ```
 
 **5. For additional info:**
 
 ```bash
-node profile-hunter.js --help
+node duip.js --help
 ```
 
 ### Note:
