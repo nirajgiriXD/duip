@@ -1,7 +1,7 @@
 {
-  "name": "profile-finder",
+  "name": "profile-hunter",
   "version": "1.0.0",
-  "description": "",
+  "description": "Profile Hunter is a powerful and efficient tool designed to simplify the process of finding information about individuals across various platforms. Whether you're looking for colleagues, professionals, or friends, our tool provides a seamless experience to discover and connect with people.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
