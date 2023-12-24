@@ -131,7 +131,6 @@ class ProfileHunter {
 
   /**
    * @todo Logic to handle search query result
-   * @returns string Search Query
    */
   async handleCrawl(searchQuery) {
     puppeteer.use(stealthPluginPuppeteer());
