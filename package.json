@@ -12,9 +12,10 @@
   "dependencies": {
     "install": "^0.13.0",
     "npm": "^10.2.5",
-    "yargs": "^17.7.2",
+    "open": "^6.4.0",
     "puppeteer": "^21.6.1",
     "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "yargs": "^17.7.2"
   }
 }
