@@ -11,7 +11,7 @@ const stealthPluginPuppeteer = require("puppeteer-extra-plugin-stealth");
 const getSearchResult = async (searchQuery) => {
   puppeteer.use(stealthPluginPuppeteer());
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: "new",
     // args: [],
     // userDataDir: "",
     // executablePath: "",
@@ -20,23 +20,49 @@ const getSearchResult = async (searchQuery) => {
 
   await page.goto(searchQuery);
 
-  const profiles = [];
-  const links = await page.$$("a");
-  for (const link of links) {
-    const src = await page.evaluate((el) => {
-      return {
-        title: el.textContent,
-        src: el.href,
-      };
-    }, link);
+  // Wait for the search results page to load.
+  await page.waitForSelector("div.g");
 
-    profiles.push(src);
-  }
+  // Extract search results.
+  const searchResults = await page.evaluate(() => {
+    const results = [];
+    const resultElements = document.querySelectorAll("div.g");
 
-  console.log(profiles);
+    resultElements.forEach((resultElement) => {
+      const linkElement = resultElement.querySelector("a");
+      const imgElement = resultElement.querySelector("img");
+
+      // Remove unwanted text content.
+      const citationELement = resultElement.querySelector("cite");
+      if (
+        citationELement &&
+        citationELement.parentElement &&
+        citationELement.parentElement
+      ) {
+        citationELement.parentElement.parentElement.innerText = "";
+      }
+
+      if (linkElement) {
+        const title = linkElement.textContent;
+        const url = linkElement.getAttribute("href");
+        const imageUrl = imgElement ? imgElement.getAttribute("src") : null;
+
+        // Check if the URL contains any of the exclude patterns.
+        if (!url.includes("google.com")) {
+          results.push({ title, url, imageUrl });
+        }
+      }
+    });
+
+    return results;
+  });
+
+  // console.log(searchResults);
 
   // Do not close browser after search is complete.
-  // await browser.close();
+  await browser.close();
+
+  return searchResults;
 };
 
 module.exports = { getSearchResult };
