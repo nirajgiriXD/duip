@@ -1,4 +1,9 @@
 /**
+ * External dependencies.
+ */
+const open = require("open");
+
+/**
  * Internal dependencies.
  */
 const {
@@ -6,6 +11,8 @@ const {
   hasSearchArgument,
   getSearchQuery,
   getSearchResult,
+  setSearchResult,
+  showLoadingAnimation,
 } = require("./utilities");
 
 /**
@@ -23,7 +30,17 @@ class Duip {
   /**
    * Manages the overall application lifecycle.
    */
-  main() {
+  async main() {
+    // Handle loading animation.
+    let loadingAnimationIndex = 0;
+    const loadingAnimation = ["|", "/", "-", "\\"];
+    const loadingInterval = setInterval(() => {
+      loadingAnimationIndex = showLoadingAnimation(
+        loadingAnimation,
+        loadingAnimationIndex
+      );
+    }, 100);
+
     // Check whether any arguments were present.
     if (!hasSearchArgument(this.data)) {
       console.error("Error: Minimum one argument expected, received none.");
@@ -31,11 +48,19 @@ class Duip {
     }
 
     const searchQuery = getSearchQuery(this.data);
+    const searchResults = await getSearchResult(searchQuery);
 
-    // Show query for debugging.
-    console.log(searchQuery);
+    // Set search results.
+    await setSearchResult(searchResults);
 
-    getSearchResult(searchQuery);
+    // Display search results page.
+    await open("index.html");
+
+    clearInterval(loadingInterval);
+    process.stdout.clearLine();
+    process.stdout.cursorTo(0);
+    console.log("✔ Loaded");
+    console.log("✔ Task complete");
   }
 }
 
