@@ -3,6 +3,8 @@ const getSearchArguments = require("./getSearchArguments");
 const hasSearchArgument = require("./hasSearchArgument");
 const getSearchQuery = require("./getSearchQuery");
 const getSearchResult = require("./getSearchResult");
+const setSearchResult = require("./setSearchResult");
+const showLoadingAnimation = require("./showLoadingAnimation");
 
 // Export modules.
 module.exports = {
@@ -10,4 +12,6 @@ module.exports = {
   ...hasSearchArgument,
   ...getSearchQuery,
   ...getSearchResult,
+  ...setSearchResult,
+  ...showLoadingAnimation,
 };
