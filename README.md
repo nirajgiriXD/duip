@@ -68,6 +68,12 @@ This command installs the required packages specified in the `package.json` file
 node profile-hunter.js --name=<name> --username=<username> --email=<email> --phone=<phone> --site=<site> --address=<address> --oraganization=<organization>
 ```
 
+**5. For additional info:**
+
+```bash
+node profile-hunter.js --help
+```
+
 ### Note:
 
 - Make sure you have `Node.js` installed on your machine before running the project.
