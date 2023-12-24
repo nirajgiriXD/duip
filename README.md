@@ -34,7 +34,6 @@ Profile Hunter is a powerful and efficient tool designed to simplify the process
 
 - Download:
 
-  - Visit the GitHub repository [Profile Hunter](https://github.com/nirajgiriXD/profile-hunter).
   - Click on the `Code` button.
   - Select `Download ZIP`.
   - Extract the downloaded ZIP file to your desired location.
@@ -66,7 +65,7 @@ This command installs the required packages specified in the `package.json` file
 4. Run the application:
 
 ```bash
-node profile-hunter.js --user=<user> --username=<username> --email=<email> --phone=<phone> --site=<site> --address=<address> --oraganization=<organization>
+node profile-hunter.js --name=<name> --username=<username> --email=<email> --phone=<phone> --site=<site> --address=<address> --oraganization=<organization>
 ```
 
 ### Note:
