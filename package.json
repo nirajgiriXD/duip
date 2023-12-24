@@ -1,7 +1,7 @@
 {
-  "name": "profile-hunter",
+  "name": "duip",
   "version": "1.0.0",
-  "description": "Profile Hunter is a powerful and efficient tool designed to simplify the process of finding information about individuals across various platforms. Whether you're looking for colleagues, professionals, or friends, our tool provides a seamless experience to discover and connect with people.",
+  "description": "DUIP (Discover User Internet Profile) is a powerful and efficient tool designed to simplify the process of finding information about individuals across various platforms. Whether you're looking for colleagues, professionals, or friends, our tool provides a seamless experience to discover and connect with people.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,9 +12,9 @@
   "dependencies": {
     "install": "^0.13.0",
     "npm": "^10.2.5",
+    "yargs": "^17.7.2",
     "puppeteer": "^21.6.1",
     "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "yargs": "^17.7.2"
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }
