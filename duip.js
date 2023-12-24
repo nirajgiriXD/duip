@@ -11,7 +11,7 @@ const {
 /**
  * Main class of the application responsible for initializing and starting the application.
  */
-class ProfileHunter {
+class Duip {
   constructor() {
     // Initialize data members.
     this.data = getSearchArguments();
@@ -39,4 +39,4 @@ class ProfileHunter {
   }
 }
 
-new ProfileHunter();
+new Duip();

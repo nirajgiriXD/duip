@@ -10,7 +10,7 @@ git pull origin main
 git checkout -b feat/your-feature-name
 ```
 
-- Replace `your-feature-name`` with a descriptive name for your new feature.
+- Replace `your-feature-name` with a descriptive name for your new feature.
 
 Alternatively, for fixing an issue:
 
@@ -20,7 +20,7 @@ git pull origin main
 git checkout -b fix/your-issue-name
 ```
 
-- Replace `your-issue-name`` with a descriptive name for your issue.
+- Replace `your-issue-name` with a descriptive name for your issue.
 
 2. Branch Naming Conventions:
 
