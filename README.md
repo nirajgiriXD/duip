@@ -71,4 +71,4 @@ node profile-hunter.js --user=<user> --username=<username> --email=<email> --pho
 
 ### Note:
 
-- Make sure you have Node.js installed on your machine before running the project.
+- Make sure you have `Node.js` installed on your machine before running the project.
