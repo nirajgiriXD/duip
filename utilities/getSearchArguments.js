@@ -9,7 +9,7 @@ const yargs = require("yargs");
 const getSearchArguments = () => {
   const argv = yargs
     .option("name", {
-      describe: "Display Name",
+      describe: "Display name",
       demandOption: false,
       type: "string",
     })
@@ -44,14 +44,19 @@ const getSearchArguments = () => {
       type: "string",
     }).argv;
 
+  const filterArgument = (argument) => {
+    // Remove special character and trim.
+    return argument?.replace(/[^a-zA-Z0-9. ]/g, "")?.replace(/ +/g, "+");
+  };
+
   return {
-    username: argv["username"],
-    name: argv["name"],
-    site: argv["site"],
-    email: argv["email"],
-    phone: argv["phone"],
-    address: argv["address"],
-    organization: argv["organization"],
+    username: filterArgument(argv["username"]),
+    name: filterArgument(argv["name"]),
+    site: filterArgument(argv["site"]),
+    email: filterArgument(argv["email"]),
+    phone: filterArgument(argv["phone"]),
+    address: filterArgument(argv["address"]),
+    organization: filterArgument(argv["organization"]),
   };
 };
 

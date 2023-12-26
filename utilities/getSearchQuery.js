@@ -13,26 +13,31 @@ const getSearchQuery = ({
   site,
   organization,
 }) => {
-  const initialQuery = "https://www.google.com/search?q=";
-  let finalQuery = initialQuery;
+  // Start with the base search query URL
+  let finalQuery = "https://www.google.com/search?q=";
 
-  finalQuery = site
-    ? finalQuery === initialQuery
-      ? `${finalQuery}site%3A${site}`
-      : `${finalQuery}+site%3A${site}`
-    : finalQuery;
+  // Helper function to add a term to the query
+  const addTermToQuery = (term, isQuoted, operator) => {
+    if (term) {
+      finalQuery +=
+        finalQuery === "https://www.google.com/search?q="
+          ? isQuoted
+            ? `${operator}%3A%27${term}%27`
+            : `${operator}%3A${term}`
+          : isQuoted
+          ? `+${operator}%3A%27${term}%27`
+          : `+${operator}%3A${term}`;
+    }
+  };
 
-  finalQuery = name
-    ? finalQuery === initialQuery
-      ? `${finalQuery}intext%3A${name}`
-      : `${finalQuery}+intext%3A${name}`
-    : finalQuery;
-
-  finalQuery = username
-    ? finalQuery === initialQuery
-      ? `${finalQuery}inurl%3A${username}`
-      : `${finalQuery}+inurl%3A${username}`
-    : finalQuery;
+  // Add each term to the query using the helper function
+  addTermToQuery(site, false, "site");
+  addTermToQuery(name, true, "intext");
+  addTermToQuery(username, false, "inurl");
+  addTermToQuery(email, false, "intext");
+  addTermToQuery(phone, false, "intext");
+  addTermToQuery(address, true, "intext");
+  addTermToQuery(organization, true, "intext");
 
   return finalQuery;
 };
