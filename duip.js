@@ -12,6 +12,7 @@ const {
   getSearchQuery,
   getSearchResult,
   setSearchResult,
+  showProcessedInfo,
   showLoadingAnimation,
 } = require("./utilities");
 
@@ -41,26 +42,32 @@ class Duip {
       );
     }, 100);
 
-    // Check whether any arguments were present.
-    if (!hasSearchArgument(this.data)) {
+    if (hasSearchArgument(this.data)) {
+      // Display processed info.
+      showProcessedInfo(this.data);
+    } else {
       console.error("Error: Minimum one argument expected, received none.");
       return;
     }
 
+    // Get search query.
     const searchQuery = getSearchQuery(this.data);
+
+    // Get search result.
     const searchResults = await getSearchResult(searchQuery);
 
-    // Set search results.
+    // Save search results.
     await setSearchResult(searchResults);
 
-    // Display search results page.
-    await open("index.html");
-
+    // Complete loading animation.
     clearInterval(loadingInterval);
     process.stdout.clearLine();
     process.stdout.cursorTo(0);
     console.log("✔ Loaded");
     console.log("✔ Task complete");
+
+    // Display search results page.
+    await open("index.html");
   }
 }
 
