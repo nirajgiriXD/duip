@@ -29,6 +29,18 @@ class Duip {
   }
 
   /**
+   * Clear loading animation.
+   */
+  clearLoadingAnimation(interval, displayMessage) {
+    clearInterval(interval);
+    process.stdout.clearLine();
+    process.stdout.cursorTo(0);
+    displayMessage.forEach((message) => {
+      console.log(message);
+    });
+  }
+
+  /**
    * Manages the overall application lifecycle.
    */
   async main() {
@@ -46,25 +58,27 @@ class Duip {
       // Display processed info.
       showProcessedInfo(this.data);
     } else {
-      console.error("Error: Minimum one argument expected, received none.");
+      this.clearLoadingAnimation(loadingInterval, [
+        "Error: Minimum one argument expected, received none.",
+      ]);
       return;
     }
 
     // Get search query.
     const searchQuery = getSearchQuery(this.data);
+    console.log(searchQuery);
 
     // Get search result.
     const searchResults = await getSearchResult(searchQuery);
 
     // Save search results.
-    await setSearchResult(searchResults);
+    await setSearchResult(searchQuery, searchResults);
 
     // Complete loading animation.
-    clearInterval(loadingInterval);
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
-    console.log("✔ Loaded");
-    console.log("✔ Task complete");
+    this.clearLoadingAnimation(loadingInterval, [
+      "✔ Loaded",
+      "✔ Task complete",
+    ]);
 
     // Display search results page.
     await open("index.html");
