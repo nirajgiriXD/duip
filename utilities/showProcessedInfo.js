@@ -1,10 +1,20 @@
 const showProcessedInfo = (arguments) => {
+  const filterArgumentName = (argumentName) => {
+    return argumentName.charAt(0).toUpperCase() + argumentName.slice(1);
+  };
+
+  const filterArgumentValue = (argumentValue) => {
+    return typeof argumentValue === "string"
+      ? argumentValue.replace("+", " ")
+      : argumentValue;
+  };
+
   console.log("");
   Object.keys(arguments).forEach((argument) => {
-    const argumentName = argument.charAt(0).toUpperCase() + argument.slice(1);
-    const argumentValue = arguments[argument]?.replace("+", " ");
+    if (arguments[argument] !== undefined) {
+      const argumentName = filterArgumentName(argument);
+      const argumentValue = filterArgumentValue(arguments[argument]);
 
-    if (argumentValue) {
       console.log(`${argumentName}: ${argumentValue}`);
     }
   });
