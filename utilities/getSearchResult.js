@@ -18,6 +18,11 @@ const getSearchResult = async (searchQuery) => {
   });
   const page = await browser.newPage();
 
+  // Block dialogs
+  await page.on("dialog", async (dialog) => {
+    await dialog.dismiss();
+  });
+
   await page.goto(searchQuery);
 
   // Wait for the search results page to load.
