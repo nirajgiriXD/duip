@@ -6,38 +6,57 @@
  */
 const getSearchQuery = ({
   username,
+  mode,
   name,
   email,
   phone,
   address,
   site,
   organization,
+  preciseName,
+  preciseAddress,
+  preciseOrganization,
 }) => {
   // Start with the base search query URL
   let finalQuery = "https://www.google.com/search?q=";
+  const joinQueryOperator = mode === "precise" ? "+AND+" : "+";
 
   // Helper function to add a term to the query
-  const addTermToQuery = (term, isQuoted, operator) => {
+  const addTermToQuery = (term, operator, isPrecise, isWrapped) => {
+    const searchOperator = isPrecise ? "" : `${operator}%3A`;
+    const quotationMark = isPrecise ? `"` : isWrapped ? `%27` : ``;
+
     if (term) {
       finalQuery +=
         finalQuery === "https://www.google.com/search?q="
-          ? isQuoted
-            ? `${operator}%3A%27${term}%27`
-            : `${operator}%3A${term}`
-          : isQuoted
-          ? `+${operator}%3A%27${term}%27`
-          : `+${operator}%3A${term}`;
+          ? `${searchOperator}${quotationMark}${term}${quotationMark}`
+          : `${joinQueryOperator}${searchOperator}${quotationMark}${term}${quotationMark}`;
     }
   };
 
   // Add each term to the query using the helper function
-  addTermToQuery(site, false, "site");
-  addTermToQuery(name, true, "intext");
-  addTermToQuery(username, false, "inurl");
-  addTermToQuery(email, false, "intext");
-  addTermToQuery(phone, false, "intext");
-  addTermToQuery(address, true, "intext");
-  addTermToQuery(organization, true, "intext");
+  addTermToQuery(site, "site", false, false);
+  addTermToQuery(
+    preciseName === undefined ? name : preciseName,
+    "intext",
+    Boolean(preciseName),
+    true
+  );
+  addTermToQuery(username, "intext", false, false);
+  addTermToQuery(email, "intext", false, false);
+  addTermToQuery(phone, "intext", false, false);
+  addTermToQuery(
+    preciseAddress === undefined ? address : preciseAddress,
+    "intext",
+    Boolean(preciseAddress),
+    true
+  );
+  addTermToQuery(
+    preciseOrganization === undefined ? organization : preciseOrganization,
+    "intext",
+    Boolean(preciseOrganization),
+    true
+  );
 
   return finalQuery;
 };

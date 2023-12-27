@@ -3,10 +3,10 @@
  */
 const fs = require("fs/promises");
 
-const setSearchResult = async (profiles) => {
+const setSearchResult = async (query, profiles) => {
   await fs.writeFile(
-    "data/profiles.js",
-    `const profiles = ${JSON.stringify(profiles)};`
+    "data/data.js",
+    `const query = '${query}';const profiles = ${JSON.stringify(profiles)};`
   );
 };
 

@@ -13,6 +13,11 @@ const getSearchArguments = () => {
       demandOption: false,
       type: "string",
     })
+    .option("precise-name", {
+      describe: "Precise check for display name",
+      demandOption: false,
+      type: "string",
+    })
     .option("username", {
       describe: "Username",
       demandOption: false,
@@ -33,6 +38,11 @@ const getSearchArguments = () => {
       demandOption: false,
       type: "string",
     })
+    .option("precise-address", {
+      describe: "Precise check for address",
+      demandOption: false,
+      type: "string",
+    })
     .option("site", {
       describe: "Site",
       demandOption: false,
@@ -40,6 +50,16 @@ const getSearchArguments = () => {
     })
     .option("organization", {
       describe: "Organization",
+      demandOption: false,
+      type: "string",
+    })
+    .option("precise-organization", {
+      describe: "Precise check for organization",
+      demandOption: false,
+      type: "string",
+    })
+    .option("Mode", {
+      describe: "Mode of operation",
       demandOption: false,
       type: "string",
     }).argv;
@@ -51,12 +71,16 @@ const getSearchArguments = () => {
 
   return {
     username: filterArgument(argv["username"]),
+    mode: filterArgument(argv["mode"]),
     name: filterArgument(argv["name"]),
     site: filterArgument(argv["site"]),
     email: filterArgument(argv["email"]),
     phone: filterArgument(argv["phone"]),
     address: filterArgument(argv["address"]),
     organization: filterArgument(argv["organization"]),
+    preciseName: filterArgument(argv["precise-name"]),
+    preciseAddress: filterArgument(argv["precise-address"]),
+    preciseOrganization: filterArgument(argv["precise-organization"]),
   };
 };
 
