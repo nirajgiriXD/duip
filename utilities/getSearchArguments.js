@@ -58,7 +58,7 @@ const getSearchArguments = () => {
       demandOption: false,
       type: "string",
     })
-    .option("Mode", {
+    .option("mode", {
       describe: "Mode of operation",
       demandOption: false,
       type: "string",

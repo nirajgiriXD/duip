@@ -5,7 +5,7 @@ const showProcessedInfo = (arguments) => {
 
   const filterArgumentValue = (argumentValue) => {
     return typeof argumentValue === "string"
-      ? argumentValue.replace("+", " ")
+      ? argumentValue.replaceAll("+", " ")
       : argumentValue;
   };
 
