@@ -66,7 +66,6 @@ class Duip {
 
     // Get search query.
     const searchQuery = getSearchQuery(this.data);
-    console.log(searchQuery);
 
     // Get search result.
     const searchResults = await getSearchResult(searchQuery);
