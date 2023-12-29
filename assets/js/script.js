@@ -8,10 +8,9 @@ profiles.forEach((profile) => {
     <td>
       <img src="${profile.imageUrl}" class="rounded" />
     </td>
-    <td>${profile.title}</td>
     <td>
-      <a class="btn btn-primary" href="${profile.url}" target="_blank">
-        View
+      <a class="btn btn-primary" href="${profile.url}" target="_blank" rel="noopener noreferrer">
+        ${profile.title}
       </a>
     </td>
   </tr>`;
