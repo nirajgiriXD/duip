@@ -1,6 +1,6 @@
 import {
-  hasSearchArgument,
-  getSearchQuery,
+  hasIndividualSearchArgument,
+  getIndividualSearchQuery,
   getIndividualSearchResult,
 } from "@utilities";
 
@@ -8,7 +8,7 @@ export const POST = async (req, res) => {
   const formData = await req.json();
 
   // Check whether any arguments were present.
-  if (!hasSearchArgument(formData)) {
+  if (!hasIndividualSearchArgument(formData)) {
     return new Response(
       JSON.stringify({
         message: "Minimum one argument expected, received none.",
@@ -20,7 +20,7 @@ export const POST = async (req, res) => {
   }
 
   // Get search query.
-  const searchQuery = getSearchQuery(formData);
+  const searchQuery = getIndividualSearchQuery(formData);
 
   // Get search result.
   const searchResults = await getIndividualSearchResult(searchQuery);

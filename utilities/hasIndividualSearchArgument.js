@@ -3,7 +3,7 @@
  *
  * @returns boolean True if any argument, else false.
  */
-const hasSearchArgument = (data) => {
+const hasIndividualSearchArgument = (data) => {
   const values = Object.values({
     ...data,
     parameterAccuracy: "",
@@ -19,4 +19,4 @@ const hasSearchArgument = (data) => {
   return false;
 };
 
-export default hasSearchArgument;
+export default hasIndividualSearchArgument;

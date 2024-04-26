@@ -3,7 +3,7 @@
  *
  * @returns string Search Query
  */
-const getSearchQuery = ({
+const getIndividualSearchQuery = ({
   username,
   name,
   email,
@@ -47,4 +47,4 @@ const getSearchQuery = ({
   return finalQuery;
 };
 
-export default getSearchQuery;
+export default getIndividualSearchQuery;
