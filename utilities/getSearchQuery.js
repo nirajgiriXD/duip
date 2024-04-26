@@ -12,29 +12,40 @@ const getSearchQuery = ({
   address,
   site,
   organization,
+  parameterAccuracy,
+  parameterJoinMode,
 }) => {
-  const initialQuery = "https://www.google.com/search?q=";
-  let finalQuery = initialQuery;
+  // Start with the base search query URL
+  let finalQuery = "https://www.google.com/search?q=";
+  const joinQueryOperator = parameterJoinMode === "and" ? "+AND+" : "+";
 
-  finalQuery = site
-    ? finalQuery === initialQuery
-      ? `${finalQuery}site%3A${site}`
-      : `${finalQuery}+site%3A${site}`
-    : finalQuery;
+  // Helper function to add a term to the query
+  const addTermToQuery = (term, operator, isWrapped) => {
+    const isPrecise = parameterAccuracy === "strict";
+    const searchOperator = isPrecise ? "" : `${operator}%3A`;
+    const quotationMark = isPrecise ? `"` : isWrapped ? `%27` : ``;
 
-  finalQuery = name
-    ? finalQuery === initialQuery
-      ? `${finalQuery}intext%3A${name}`
-      : `${finalQuery}+intext%3A${name}`
-    : finalQuery;
+    if (term) {
+      finalQuery +=
+        finalQuery === "https://www.google.com/search?q="
+          ? `${searchOperator}${quotationMark}${term}${quotationMark}`
+          : `${joinQueryOperator}${searchOperator}${quotationMark}${term}${quotationMark}`;
+    }
+  };
 
-  finalQuery = username
-    ? finalQuery === initialQuery
-      ? `${finalQuery}inurl%3A${username}`
-      : `${finalQuery}+inurl%3A${username}`
-    : finalQuery;
+  // Add each term to the query using the helper function
+  addTermToQuery(site, "site", false);
+  addTermToQuery(username, "intext", false);
+  addTermToQuery(email, "intext", false);
+  addTermToQuery(phone, "intext", false);
+  addTermToQuery(name, "intext", false);
+  addTermToQuery(address, "intext", false);
+  addTermToQuery(organization, "intext", false);
+
+  // Replace whitespace
+  finalQuery = finalQuery.replaceAll(" ", "%20");
 
   return finalQuery;
 };
 
-module.exports = { getSearchQuery };
+export default getSearchQuery;
