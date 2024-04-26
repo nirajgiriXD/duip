@@ -3,8 +3,13 @@
  *
  * @returns boolean True if any argument, else false.
  */
-const hasSearchArgument = (data) => {
-  const values = Object.values(data);
+const hasIndividualSearchArgument = (data) => {
+  const values = Object.values({
+    ...data,
+    parameterAccuracy: "",
+    parameterJoinMode: "",
+  });
+
   for (let i = 0; i < values.length; i++) {
     if (values[i]) {
       return true;
@@ -14,4 +19,4 @@ const hasSearchArgument = (data) => {
   return false;
 };
 
-module.exports = { hasSearchArgument };
+export default hasIndividualSearchArgument;

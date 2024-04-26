@@ -1,15 +1,17 @@
 /**
  * External dependencies.
  */
-const puppeteer = require("puppeteer-extra");
-const stealthPluginPuppeteer = require("puppeteer-extra-plugin-stealth");
+import puppeteer from "puppeteer-extra";
+import stealthPluginPuppeteer from "puppeteer-extra-plugin-stealth";
 
 /**
  * @todo Logic to handle search query result
  * @returns string Search Query
  */
-const getSearchResult = async (searchQuery) => {
+const getIndividualSearchResult = async (searchQuery) => {
+  // Use puppeteer stealth plugin.
   puppeteer.use(stealthPluginPuppeteer());
+
   const browser = await puppeteer.launch({
     headless: "new",
     // args: [],
@@ -62,12 +64,10 @@ const getSearchResult = async (searchQuery) => {
     return results;
   });
 
-  // console.log(searchResults);
-
-  // Do not close browser after search is complete.
+  // Close browser after search is complete.
   await browser.close();
 
   return searchResults;
 };
 
-module.exports = { getSearchResult };
+export default getIndividualSearchResult;
