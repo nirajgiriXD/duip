@@ -1,7 +1,6 @@
 /**
  * Generates the search query
  *
- * @todo Improve search query
  * @returns string Search Query
  */
 const getSearchQuery = ({
@@ -21,9 +20,9 @@ const getSearchQuery = ({
 
   // Helper function to add a term to the query
   const addTermToQuery = (term, operator, isWrapped) => {
-    const isPrecise = parameterAccuracy === "strict";
-    const searchOperator = isPrecise ? "" : `${operator}%3A`;
-    const quotationMark = isPrecise ? `"` : isWrapped ? `%27` : ``;
+    const searchOperator = `${operator}%3A`;
+    const quotationMark =
+      parameterAccuracy === "strict" ? `"` : isWrapped ? "%27" : "";
 
     if (term) {
       finalQuery +=
