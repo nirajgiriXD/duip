@@ -1,6 +1,7 @@
 {
   "name": "duip",
-  "version": "0.1.0",
+  "version": "2.0.0",
+  "description": "DUIP (Discover User Internet Profile) is a powerful and efficient tool designed to simplify the process of finding information about individuals across various platforms.",
   "private": true,
   "scripts": {
     "dev": "next dev",
