@@ -1,5 +1,8 @@
 "use client";
 
+/**
+ * External dependencies.
+ */
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -10,7 +13,7 @@ const IndividualResult = () => {
   useEffect(() => {
     const setDataFromLocalStorage = async () => {
       // Retrieve the stringified JSON data from local storage
-      const data = localStorage.getItem("result-for-individual");
+      const data = localStorage.getItem("result");
 
       // If no result, redirect to search page
       if (!data) {
@@ -18,7 +21,7 @@ const IndividualResult = () => {
       }
 
       // Convert into JSON
-      const json = await JSON.parse(data || "[]");
+      const json = (await JSON.parse(data)) || [];
 
       setResults(json);
     };
@@ -37,13 +40,13 @@ const IndividualResult = () => {
                 <table className="bg-transparent w-max border-collapse">
                   <thead>
                     <tr>
-                      <th class="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                      <th className="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                         #
                       </th>
-                      <th class="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                      <th className="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                         Thumbnail
                       </th>
-                      <th class="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                      <th className="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                         Title
                       </th>
                     </tr>
@@ -59,11 +62,14 @@ const IndividualResult = () => {
                             {index + 1}
                           </th>
                           <td className="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap px-4 py-1">
-                            <img src={item.imageUrl} class="rounded w-6 h-6" />
+                            <img
+                              src={item.imageUrl}
+                              className="rounded w-6 h-6"
+                            />
                           </td>
                           <td className="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap px-4 py-1">
                             <a
-                              class="link-underline link-underline-opacity-0 hover:text-blue-700"
+                              className="link-underline link-underline-opacity-0 hover:text-blue-700"
                               href={item.url}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -84,14 +90,25 @@ const IndividualResult = () => {
             {/* Divider */}
             <hr className="mt-6" />
 
-            {/* Home Button */}
-            <button
-              type="button"
-              onClick={() => router.push("/")}
-              className="mt-6 block w-full select-none rounded-lg bg-blue-400 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-400/10 transition-all hover:shadow-lg hover:shadow-blue-400/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-            >
-              Home
-            </button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {/* Home */}
+              <button
+                type="button"
+                onClick={() => router.push("/")}
+                className="mt-6 block w-full select-none rounded-lg bg-blue-400 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-400/10 transition-all hover:shadow-lg hover:shadow-blue-400/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+              >
+                Home Page
+              </button>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                onClick={() => router.push("/search")}
+                className="mt-6 block w-full select-none rounded-lg bg-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-500/10 transition-all hover:shadow-lg hover:shadow-gray-500/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+              >
+                Search Page
+              </button>
+            </div>
           </div>
         </div>
       </div>
