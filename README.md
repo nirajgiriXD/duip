@@ -4,45 +4,33 @@ DUIP (`Discover User Internet Profile`) is a powerful and efficient tool designe
 
 ## Key Features
 
-- **Comprehensive Search:**
+- **Group Search Functionality:**
 
-  - Conduct in-depth searches for individuals based on their names, professions, affiliations, or any other relevant criteria.
-  - Refine search results with advanced filters to locate specific individuals quickly.
+  - With DUIP v3.0.0, users can now search for groups of people that match specific search parameters, expanding the scope of discovery beyond individual users.
 
-- **Multi-Platform:**
+- **Enhanced Search Algorithm:**
 
-  - Searches for users across a variety of platforms to provide a holistic view of an individual's online presence.
+  - DUIP v3.0.0 employs an improved search algorithm that generates multiple combinations of search parameters and aggregates the results into a unified set, providing users with a comprehensive view of matching individuals or groups.
 
-- **CLI:**
+- **Increased Result Yield:**
 
-  - Designed with a user-friendly command-line interface for a streamlined and efficient search experience.
-  - Quick and straightforward commands for an instant display of search results.
+  - Compared to previous versions, DUIP v3.0.0 is capable of delivering significantly more results, thanks to its ability to generate and combine multiple search queries efficiently.
 
-- **Privacy:**
+- **Intuitive User Interface:**
 
-  - Prioritizes user privacy by adhering to ethical data usage practices.
-  - Exclusively searches for publicly available data, respecting privacy boundaries and ethical data retrieval practices.
+  - DUIP v3.0.0 maintains its user-friendly interface, ensuring that users can navigate the application seamlessly while benefiting from its enhanced search capabilities.
 
-- **Collaboration and Networking:**
+- **Privacy and Data Ethics:**
 
-  - Foster professional connections by discovering and connecting with people in your field or related industries.
-  - Facilitates networking opportunities through shared interests and affiliations.
+  - As always, DUIP prioritizes user privacy and adheres to ethical data usage practices, ensuring that all searches are conducted using publicly available data sources.
 
 ## Usage Guide
 
-**1. Download or Clone the Repository:**
+**1. Clone the Repository:**
 
-- **Download:**
-
-  - Click on the `Code` button.
-  - Select `Download ZIP`.
-  - Extract the downloaded ZIP file to your desired location.
-
-- **Clone:**
-
-  - Open a terminal or command prompt.
-  - Navigate to the directory where you want to clone the repository.
-  - Run the following command:
+- Open a terminal or command prompt.
+- Navigate to the directory where you want to clone the repository.
+- Run the following command:
 
 ```bash
 git clone https://github.com/nirajgiriXD/duip.git
@@ -52,7 +40,9 @@ This will clone the repository to your local machine.
 
 **2. Navigate to the Project Directory:**
 
-- Using the terminal or command prompt, navigate to the directory where you downloaded or cloned the repository.
+```bash
+cd duip
+```
 
 **3. Install Dependencies:**
 
@@ -62,18 +52,14 @@ npm install
 
 This command installs the required packages specified in the `package.json` file.
 
-**4. Run the application:**
+**4. Run the Application:**
 
 ```bash
-node duip.js --name=<name> --username=<username> --email=<email> --phone=<phone> --site=<site> --address=<address> --oraganization=<organization>
+npm run dev
 ```
 
-**5. For additional info:**
+This command starts the Next.js application.
 
-```bash
-node duip.js --help
-```
+**5. Access the DUIP Interface:**
 
-### Note:
-
-- Make sure you have `Node.js` installed on your machine before running the project.
+Open a web browser and navigate to http://localhost:3000 to access the DUIP interface.
