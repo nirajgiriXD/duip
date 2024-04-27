@@ -4,13 +4,9 @@ DUIP (`Discover User Internet Profile`) is a powerful and efficient tool designe
 
 ## Key Features
 
-- **Group Search Functionality:**
-
-  - With DUIP v3.0.0, users can now search for groups of people that match specific search parameters, expanding the scope of discovery beyond individual users.
-
 - **Enhanced Search Algorithm:**
 
-  - DUIP v3.0.0 employs an improved search algorithm that generates multiple combinations of search parameters and aggregates the results into a unified set, providing users with a comprehensive view of matching individuals or groups.
+  - DUIP v3.0.0 employs an improved search algorithm that generates multiple combinations of search parameters and aggregates the results into a unified set, providing users with a comprehensive view of matching individuals.
 
 - **Increased Result Yield:**
 
