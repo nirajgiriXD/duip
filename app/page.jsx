@@ -1,5 +1,8 @@
 "use client";
 
+/**
+ * External dependencies.
+ */
 import { useRouter } from "next/navigation";
 
 const LandingPage = () => {
@@ -10,11 +13,11 @@ const LandingPage = () => {
       <div
         className="transform rounded-xl h-40 w-40 bg-white shadow-xl transition duration-100 hover:scale-105"
         role="button"
-        onClick={() => router.push("/search-individual")}
+        onClick={() => router.push("/search")}
       >
         <div className="flex h-full justify-center items-center">
           <span className="font-bold text-gray-500 p-3 text-center">
-            Search Individual
+            Search Page
           </span>
         </div>
       </div>
@@ -22,11 +25,11 @@ const LandingPage = () => {
       <div
         className="transform rounded-xl h-40 w-40 bg-white shadow-xl transition duration-100 hover:scale-105"
         role="button"
-        onClick={() => router.push("/search-group")}
+        onClick={() => router.push("/result")}
       >
         <div className="flex h-full justify-center items-center">
           <span className="font-bold text-gray-500 p-3 text-center">
-            Search Group
+            Result Page
           </span>
         </div>
       </div>
@@ -34,23 +37,14 @@ const LandingPage = () => {
       <div
         className="transform rounded-xl h-40 w-40 bg-white shadow-xl transition duration-100 hover:scale-105"
         role="button"
-        onClick={() => router.push("/result-for-individual")}
+        onClick={() => {
+          localStorage.clear();
+          alert("Data deleted succcessfully");
+        }}
       >
         <div className="flex h-full justify-center items-center">
           <span className="font-bold text-gray-500 p-3 text-center">
-            Individual Search Result
-          </span>
-        </div>
-      </div>
-
-      <div
-        className="transform rounded-xl h-40 w-40 bg-white shadow-xl transition duration-100 hover:scale-105"
-        role="button"
-        onClick={() => router.push("/result-for-group")}
-      >
-        <div className="flex h-full justify-center items-center">
-          <span className="font-bold text-gray-500 p-3 text-center">
-            Group Search Result
+            Clear Data
           </span>
         </div>
       </div>

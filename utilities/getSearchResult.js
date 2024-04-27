@@ -1,6 +1,7 @@
 /**
  * External dependencies.
  */
+import { setTimeout } from "node:timers/promises";
 import puppeteer from "puppeteer-extra";
 import stealthPluginPuppeteer from "puppeteer-extra-plugin-stealth";
 
@@ -8,7 +9,7 @@ import stealthPluginPuppeteer from "puppeteer-extra-plugin-stealth";
  * @todo Logic to handle search query result
  * @returns string Search Query
  */
-const getIndividualSearchResult = async (searchQuery) => {
+const getSearchResult = async (searchQuery, numOfScroll) => {
   // Use puppeteer stealth plugin.
   puppeteer.use(stealthPluginPuppeteer());
 
@@ -29,6 +30,16 @@ const getIndividualSearchResult = async (searchQuery) => {
 
   // Wait for the search results page to load.
   await page.waitForSelector("div.g");
+
+  // Scroll the page numOfScroll times
+  for (let i = 0; i < numOfScroll; i++) {
+    await page.evaluate(() => {
+      window.scrollBy(0, window.innerHeight);
+    });
+
+    // Wait for 0.5 second after each scroll
+    await setTimeout(500);
+  }
 
   // Extract search results.
   const searchResults = await page.evaluate(() => {
@@ -70,4 +81,4 @@ const getIndividualSearchResult = async (searchQuery) => {
   return searchResults;
 };
 
-export default getIndividualSearchResult;
+export default getSearchResult;
