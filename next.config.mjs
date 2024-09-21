@@ -6,7 +6,6 @@ const nextConfig = {
       "puppeteer-extra",
       "puppeteer-extra-plugin-stealth",
     ],
-    workerThreads: false,
   },
 };
 
