@@ -3,6 +3,7 @@ const nextConfig = {
   distDir: "_next",
   experimental: {
     serverComponentsExternalPackages: [
+      "node-llama-cpp",
       "puppeteer-extra",
       "puppeteer-extra-plugin-stealth",
     ],
