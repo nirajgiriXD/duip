@@ -8,22 +8,36 @@ import { useRouter } from "next/navigation";
 
 const IndividualResult = () => {
   const [results, setResults] = useState([]);
+  const [summary, setSummary] = useState([]);
+  const [view, setView] = useState("table");
   const router = useRouter();
 
   useEffect(() => {
     const setDataFromLocalStorage = async () => {
       // Retrieve the stringified JSON data from local storage
-      const data = localStorage.getItem("result");
+      const _result = localStorage.getItem("result");
+        const _summary = localStorage.getItem("summary");
 
       // If no result, redirect to search page
-      if (!data) {
+      if (!_result) {
         router.push("/search");
       }
 
       // Convert into JSON
-      const json = (await JSON.parse(data)) || [];
+      const result = (await JSON.parse(_result)) || [];
+      const summary = (await JSON.parse(_summary)) || [];
+      const formattedSummary = summary
+        // Wrap text enclosed in backticks (`...`) with <code>
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        // Convert single * to <li> list items
+        .replace(/(?<!\*)\* (.+?)(?=\n)/g, "<li>$1</li>")
+        // Replace **bold** with <strong>
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        // Replace newlines for cleaner formatting
+        .replace(/\n\n/g, "<br/>");
 
-      setResults(json);
+      setResults(result);
+      setSummary(formattedSummary);
     };
 
     setDataFromLocalStorage();
@@ -37,51 +51,68 @@ const IndividualResult = () => {
             <div className="overflow-x-auto">
               {/* Results */}
               {results.length ? (
-                <table className="bg-transparent w-max border-collapse">
-                  <thead>
-                    <tr>
-                      <th className="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                        #
-                      </th>
-                      <th className="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                        Thumbnail
-                      </th>
-                      <th className="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                        Title
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {results.map((item, index) => {
-                      return (
-                        <tr className="py-2" key={index}>
-                          <th
-                            scope="row"
-                            className="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap px-4 py-1 text-left text-blueGray-700"
-                          >
-                            {index + 1}
+                <div className="flex flex-col gap-4">
+                  <div className="w-full flex justify-end">
+                    <button
+                        className="bg-transparent hover:bg-blue-400 text-blue-400 text-sm hover:text-white py-2 px-4 border border-blue-400 hover:border-transparent rounded"
+                        onClick={() => setView((prev) => prev === "table" ? "card" : "table")}>
+                        Toggle View
+                    </button>
+                  </div>
+
+                  {/* Result */}
+                  {view === "table" ? (
+                    <table className="max-w-3xl w-full bg-transparent border-collapse">
+                      <thead>
+                        <tr>
+                          <th className="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            #
                           </th>
-                          <td className="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap px-4 py-1">
-                            <img
-                              src={item.imageUrl}
-                              className="rounded w-6 h-6"
-                            />
-                          </td>
-                          <td className="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap px-4 py-1">
-                            <a
-                              className="link-underline link-underline-opacity-0 hover:text-blue-700"
-                              href={item.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {item.title}
-                            </a>
-                          </td>
+                          <th className="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            Thumbnail
+                          </th>
+                          <th className="px-4 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            Title
+                          </th>
                         </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                      </thead>
+                      <tbody>
+                        {results.map((item, index) => {
+                          return (
+                            <tr className="py-2" key={index}>
+                              <th
+                                scope="row"
+                                className="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap px-4 py-1 text-left text-blueGray-700"
+                              >
+                                {index + 1}
+                              </th>
+                              <td className="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap px-4 py-1">
+                                <img
+                                  src={item.imageUrl}
+                                  className="rounded w-6 h-6"
+                                />
+                              </td>
+                              <td className="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap px-4 py-1">
+                                <a
+                                  className="link-underline link-underline-opacity-0 hover:text-blue-700"
+                                  href={item.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {item.title}
+                                </a>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    ) : (
+                    <div className="max-w-3xl w-full">
+                      <div dangerouslySetInnerHTML={{ __html: summary }}></div>
+                    </div>)
+                  }
+                </div>
               ) : (
                 ""
               )}

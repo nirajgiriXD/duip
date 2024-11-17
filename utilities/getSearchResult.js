@@ -4,10 +4,12 @@
 import { setTimeout } from "node:timers/promises";
 import puppeteer from "puppeteer-extra";
 import stealthPluginPuppeteer from "puppeteer-extra-plugin-stealth";
+import { JSDOM } from "jsdom";
+import { Readability } from "@mozilla/readability";
 
 /**
  * @todo Logic to handle search query result
- * @returns string Search Query
+ * @returns array Search Result
  */
 const getSearchResult = async (searchQuery, numOfScroll) => {
   // Use puppeteer stealth plugin.
@@ -51,13 +53,13 @@ const getSearchResult = async (searchQuery, numOfScroll) => {
       const imgElement = resultElement.querySelector("img");
 
       // Remove unwanted text content.
-      const citationELement = resultElement.querySelector("cite");
+      const citationElement = resultElement.querySelector("cite");
       if (
-        citationELement &&
-        citationELement.parentElement &&
-        citationELement.parentElement
+        citationElement &&
+        citationElement.parentElement &&
+        citationElement.parentElement.parentElement
       ) {
-        citationELement.parentElement.parentElement.innerText = "";
+        citationElement.parentElement.parentElement.innerText = "";
       }
 
       if (linkElement) {
@@ -74,6 +76,41 @@ const getSearchResult = async (searchQuery, numOfScroll) => {
 
     return results;
   });
+
+  // Loop the pages to get the content.
+  for (let i = 0; i < searchResults.length; i++) {
+    const profileLink = searchResults[i].url;
+    try {
+      await page.goto(profileLink, { waitUntil: ['domcontentloaded', 'networkidle2'] });
+
+      // // Use Readability to extract the content.
+      // const html = await page.content();
+      // const dom = new JSDOM(html);
+      // const reader = new Readability(dom.window.document);
+      // const article = reader.parse();
+      // const content = article ? article.textContent : "";
+  
+      const content = await page.evaluate(() => {
+        const selectorsToRemove = ['header', 'footer', 'nav', 'aside', '.sidebar', '.advertisement'];
+        selectorsToRemove.forEach(selector => {
+          document.querySelectorAll(selector).forEach(el => el.remove());
+        });
+  
+        const selectors = ['main', 'article', 'section', 'div.content', 'div.main', 'div.article', 'address'];
+        for (let selector of selectors) {
+          const element = document.querySelector(selector);
+          if (element) return element.innerText.trim();
+        }
+  
+        return document.body.innerText.trim();
+      });
+  
+      searchResults[i].content = content;
+  
+    } catch (error) {
+      console.error(`Error fetching content from ${profileLink}:`, error);
+    }
+  }
 
   // Close browser after search is complete.
   await browser.close();

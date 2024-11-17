@@ -55,6 +55,7 @@ const SearchIndividual = () => {
 
         // Save the stringified JSON object to local storage
         localStorage.setItem("result", JSON.stringify(data.data));
+        localStorage.setItem("summary", JSON.stringify(data.summary));
 
         // Redirect to result page
         router.push("/result");

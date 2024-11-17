@@ -1,7 +1,7 @@
 /**
  * Internal dependencies.
  */
-import { hasSearchArgument, getSearchQuery, getSearchResult } from "@utilities";
+import { hasSearchArgument, getSearchQuery, getSearchResult, summarizeSearchResult } from "@utilities";
 
 export const POST = async (req, res) => {
   const formData = await req.json();
@@ -31,7 +31,17 @@ export const POST = async (req, res) => {
   // Get search result.
   const searchResults = await getSearchResult(searchQuery, numOfScroll);
 
-  return new Response(JSON.stringify({ data: [...searchResults] }), {
+  // Summarize search result.
+  const searchContent = searchResults.map((result) => result.content).join("\n\n");
+  const searchResultsSummary = await summarizeSearchResult(searchContent);
+
+  // Prepare response.
+  const response = {
+    data: searchResults,
+    summary: searchResultsSummary,
+  };
+
+  return new Response(JSON.stringify(response), {
     status: 200,
   });
 };
