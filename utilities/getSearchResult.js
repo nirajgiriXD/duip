@@ -4,8 +4,6 @@
 import { setTimeout } from "node:timers/promises";
 import puppeteer from "puppeteer-extra";
 import stealthPluginPuppeteer from "puppeteer-extra-plugin-stealth";
-import { JSDOM } from "jsdom";
-import { Readability } from "@mozilla/readability";
 
 /**
  * @todo Logic to handle search query result
@@ -17,9 +15,6 @@ const getSearchResult = async (searchQuery, numOfScroll) => {
 
   const browser = await puppeteer.launch({
     headless: "new",
-    // args: [],
-    // userDataDir: "",
-    // executablePath: "",
   });
   const page = await browser.newPage();
 
@@ -82,13 +77,6 @@ const getSearchResult = async (searchQuery, numOfScroll) => {
     const profileLink = searchResults[i].url;
     try {
       await page.goto(profileLink, { waitUntil: ['domcontentloaded', 'networkidle2'] });
-
-      // // Use Readability to extract the content.
-      // const html = await page.content();
-      // const dom = new JSDOM(html);
-      // const reader = new Readability(dom.window.document);
-      // const article = reader.parse();
-      // const content = article ? article.textContent : "";
   
       const content = await page.evaluate(() => {
         const selectorsToRemove = ['header', 'footer', 'nav', 'aside', '.sidebar', '.advertisement'];
