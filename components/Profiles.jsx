@@ -14,6 +14,7 @@ const Result = ({
   isManual,
   profiles,
   isSubmitting,
+  handleProfileSave,
   handleProfileSelect,
   handleProfileSubmit,
 }) => {
@@ -52,8 +53,13 @@ const Result = ({
                                 ? "Select"
                                 : "#"}
                             </th>
+                            {isManual && (
+                              <th className="p-2 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-2 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                Save
+                              </th>
+                            )}
                             <th className="p-2 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-2 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                              Thumbnail
+                              Image
                             </th>
                             <th className="p-2 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                               Title
@@ -69,7 +75,7 @@ const Result = ({
                               >
                                 <th
                                   scope="row"
-                                  className="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap px-4 py-1 text-left text-blueGray-700"
+                                  className="border-t-0 align-middle border-l-0 border-r-0 px-4 py-1 text-left text-blueGray-700"
                                 >
                                   {isManual ? (
                                     <input
@@ -80,7 +86,7 @@ const Result = ({
                                       }
                                       onChange={() =>
                                         handleProfileSelect(
-                                          item.id
+                                          item.url
                                         )
                                       }
                                     />
@@ -88,7 +94,23 @@ const Result = ({
                                     index + 1
                                   )}
                                 </th>
-                                <td className="border-t-0 align-middle border-l-0 border-r-0 whitespace-nowrap px-4 py-1">
+                                {isManual && (
+                                  <td className="border-t-0 align-middle border-l-0 border-r-0 px-4 py-1">
+                                    <input
+                                      type="checkbox"
+                                      className="form-checkbox h-4 w-4"
+                                      checked={
+                                        item.isSaved
+                                      }
+                                      onChange={() =>
+                                        handleProfileSave(
+                                          item.url
+                                        )
+                                      }
+                                    />
+                                  </td>
+                                )}
+                                <td className="border-t-0 align-middle border-l-0 border-r-0 px-4 py-1">
                                   <img
                                     src={
                                       item.imageUrl
