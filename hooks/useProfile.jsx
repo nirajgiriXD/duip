@@ -55,8 +55,14 @@ const useProfile = () => {
       localStorage.setItem("profiles", JSON.stringify(_profiles));
       localStorage.setItem("searchQuery", JSON.stringify(_searchQuery));
 
-      // Set profiles
-      setProfiles(_profiles);
+      // Set profiles by merging the new profiles with the saved profiles
+      setProfiles((prev) => {
+        const savedProfiles = prev.filter((profile) => profile.isSaved);
+        return [
+          ...savedProfiles,
+          ..._profiles.filter(item => !savedProfiles.some(profile => profile.url === item.url))
+        ];
+      });
 
       return { _profiles, _searchQuery };
     } else {
@@ -115,10 +121,23 @@ const useProfile = () => {
     }
   };
 
-  const handleProfileSelect = (id) => {
+  const handleProfileSelect = (url) => {
     const _profiles = profiles.map((item) => {
-      if (item.id === id) {
+      if (item.url === url) {
         item.isSelected = !item.isSelected;
+      }
+
+      return item;
+    });
+
+    setProfiles(_profiles);
+    localStorage.setItem("profiles", JSON.stringify(_profiles));
+  };
+
+  const handleProfileSave = (url) => {
+    const _profiles = profiles.map((item) => {
+      if (item.url === url) {
+        item.isSaved = !item.isSaved;
       }
 
       return item;
@@ -190,9 +209,9 @@ const useProfile = () => {
     profileSummary,
     handleFormDataChange,
     handleFormSubmit,
+    handleProfileSave,
     handleProfileSelect,
     handleProfileSubmit,
-    setProfileSummary,
     setCurrentPage,
     resetApp,
     isSubmitting,
