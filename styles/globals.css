@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Result Page: Profile Summary */
+#profile-summary ul {
+    padding-left: 16px;
+    list-style-type: disc !important;
+}
+
+#profile-summary p {
+    margin-top: 8px;
+}
+
+#profile-summary ul {
+    margin-top: 4px;
+}
+
+#profile-container::-webkit-scrollbar {
+    height: 100%;
+    width: 8px;
+}
+
+#profile-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#profile-container::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 5px;
+}
