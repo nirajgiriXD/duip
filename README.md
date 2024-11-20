@@ -2,24 +2,6 @@
 
 DUIP (`Discover User Internet Profile`) is a powerful and efficient tool designed to simplify the process of finding information about individuals across various platforms. Whether you're looking for colleagues, professionals, or friends, DUIP provides a seamless experience to discover and connect with people.
 
-## Key Features
-
-- **Enhanced Search Algorithm:**
-
-  - DUIP v3.0.0 employs an improved search algorithm that generates multiple combinations of search parameters and aggregates the results into a unified set, providing users with a comprehensive view of matching individuals.
-
-- **Increased Result Yield:**
-
-  - Compared to previous versions, DUIP v3.0.0 is capable of delivering significantly more results, thanks to its ability to generate and combine multiple search queries efficiently.
-
-- **Intuitive User Interface:**
-
-  - DUIP v3.0.0 maintains its user-friendly interface, ensuring that users can navigate the application seamlessly while benefiting from its enhanced search capabilities.
-
-- **Privacy and Data Ethics:**
-
-  - As always, DUIP prioritizes user privacy and adheres to ethical data usage practices, ensuring that all searches are conducted using publicly available data sources.
-
 ## Usage Guide
 
 **1. Clone the Repository:**
