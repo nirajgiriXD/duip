@@ -43,9 +43,7 @@ const getSearchResult = async (searchQuery) => {
     const results = [];
     const resultElements = document.querySelectorAll("div.g");
 
-    let id = 0;
     resultElements.forEach((resultElement) => {
-      id++;
       const linkElement = resultElement.querySelector("a");
       const imgElement = resultElement.querySelector("img");
 
@@ -60,14 +58,13 @@ const getSearchResult = async (searchQuery) => {
       }
 
       if (linkElement) {
-        const isSelected = true;
         const title = linkElement.textContent;
         const url = linkElement.getAttribute("href");
         const imageUrl = imgElement ? imgElement.getAttribute("src") : null;
 
         // Check if the URL contains any of the exclude patterns.
         if (!url.includes("google.com")) {
-          results.push({ id, title, url, imageUrl, isSelected });
+          results.push({ title, url, imageUrl, isSelected: true, isSaved: false });
         }
       }
     });
