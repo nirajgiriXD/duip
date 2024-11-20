@@ -6,10 +6,10 @@ import puppeteer from "puppeteer-extra";
 import stealthPluginPuppeteer from "puppeteer-extra-plugin-stealth";
 
 /**
- * @todo Logic to handle search query result
+ * Fetch the search result
  * @returns array Search Result
  */
-const getSearchResult = async (searchQuery, numOfScroll) => {
+const getSearchResult = async (searchQuery) => {
   // Use puppeteer stealth plugin.
   puppeteer.use(stealthPluginPuppeteer());
 
@@ -28,8 +28,8 @@ const getSearchResult = async (searchQuery, numOfScroll) => {
   // Wait for the search results page to load.
   await page.waitForSelector("div.g");
 
-  // Scroll the page numOfScroll times
-  for (let i = 0; i < numOfScroll; i++) {
+  // Scroll the page 3 times
+  for (let i = 0; i < 3; i++) {
     await page.evaluate(() => {
       window.scrollBy(0, window.innerHeight);
     });
@@ -43,7 +43,9 @@ const getSearchResult = async (searchQuery, numOfScroll) => {
     const results = [];
     const resultElements = document.querySelectorAll("div.g");
 
+    let id = 0;
     resultElements.forEach((resultElement) => {
+      id++;
       const linkElement = resultElement.querySelector("a");
       const imgElement = resultElement.querySelector("img");
 
@@ -58,47 +60,20 @@ const getSearchResult = async (searchQuery, numOfScroll) => {
       }
 
       if (linkElement) {
+        const isSelected = true;
         const title = linkElement.textContent;
         const url = linkElement.getAttribute("href");
         const imageUrl = imgElement ? imgElement.getAttribute("src") : null;
 
         // Check if the URL contains any of the exclude patterns.
         if (!url.includes("google.com")) {
-          results.push({ title, url, imageUrl });
+          results.push({ id, title, url, imageUrl, isSelected });
         }
       }
     });
 
     return results;
   });
-
-  // Loop the pages to get the content.
-  for (let i = 0; i < searchResults.length; i++) {
-    const profileLink = searchResults[i].url;
-    try {
-      await page.goto(profileLink, { waitUntil: ['domcontentloaded', 'networkidle2'] });
-  
-      const content = await page.evaluate(() => {
-        const selectorsToRemove = ['header', 'footer', 'nav', 'aside', '.sidebar', '.advertisement'];
-        selectorsToRemove.forEach(selector => {
-          document.querySelectorAll(selector).forEach(el => el.remove());
-        });
-  
-        const selectors = ['main', 'article', 'section', 'div.content', 'div.main', 'div.article', 'address'];
-        for (let selector of selectors) {
-          const element = document.querySelector(selector);
-          if (element) return element.innerText.trim();
-        }
-  
-        return document.body.innerText.trim();
-      });
-  
-      searchResults[i].content = content;
-  
-    } catch (error) {
-      console.error(`Error fetching content from ${profileLink}:`, error);
-    }
-  }
 
   // Close browser after search is complete.
   await browser.close();
