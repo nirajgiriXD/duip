@@ -1,55 +1,29 @@
 "use client";
 
 /**
- * External dependencies.
+ * Internal dependencies.
  */
-import { useRouter } from "next/navigation";
+import useProfile from "@hooks/useProfile";
+import { Form, Profiles, Summary, SpeedDial } from '@components';
 
-const LandingPage = () => {
-  const router = useRouter();
+const App = () => {
+  const { currentPage, formData, profiles, profileSummary, handleFormDataChange, handleFormSubmit,  setCurrentPage, handleProfileSubmit, handleProfileSelect, resetApp, isSubmitting } = useProfile();
 
   return (
-    <div className="flex gap-8 flex-wrap justify-center items-center min-h-screen py-10">
-      <div
-        className="transform rounded-xl h-40 w-40 bg-white shadow-xl transition duration-100 hover:scale-105"
-        role="button"
-        onClick={() => router.push("/search")}
-      >
-        <div className="flex h-full justify-center items-center">
-          <span className="font-bold text-gray-500 p-3 text-center">
-            Search Page
-          </span>
-        </div>
-      </div>
+    <main className="relative min-h-screen w-full bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+      {/* Search Page */}
+      {currentPage === 'form' && <Form formData={formData} handleFormDataChange={handleFormDataChange} handleFormSubmit={handleFormSubmit} isSubmitting={isSubmitting} />}
 
-      <div
-        className="transform rounded-xl h-40 w-40 bg-white shadow-xl transition duration-100 hover:scale-105"
-        role="button"
-        onClick={() => router.push("/result")}
-      >
-        <div className="flex h-full justify-center items-center">
-          <span className="font-bold text-gray-500 p-3 text-center">
-            Result Page
-          </span>
-        </div>
-      </div>
+      {/* Profiles Page */}
+      {currentPage === 'profiles' && <Profiles isManual={formData.process === "manual"} profiles={profiles} isSubmitting={isSubmitting} handleProfileSubmit={handleProfileSubmit} handleProfileSelect={handleProfileSelect} />}
 
-      <div
-        className="transform rounded-xl h-40 w-40 bg-white shadow-xl transition duration-100 hover:scale-105"
-        role="button"
-        onClick={() => {
-          localStorage.clear();
-          alert("Data deleted succcessfully");
-        }}
-      >
-        <div className="flex h-full justify-center items-center">
-          <span className="font-bold text-gray-500 p-3 text-center">
-            Clear Data
-          </span>
-        </div>
-      </div>
-    </div>
+      {/* Summary Page */}
+      {currentPage === 'summary' && <Summary profileSummary={profileSummary} />}
+
+      {/* SpeedDial */}
+      <SpeedDial currentPage={currentPage} setCurrentPage={setCurrentPage} resetApp={resetApp} />
+    </main>
   );
 };
 
-export default LandingPage;
+export default App;

@@ -1,17 +1,26 @@
+/**
+ * External dependencies.
+ */
 import { Inter } from "next/font/google";
-import "./globals.css";
+
+/**
+ * Internal dependencies.
+ */
+import "@styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "DUIP",
-  description: "Display User Internet Profile",
+  title: "DUIP - Discover User Internet Profile",
+  description: "DUIP (Discover User Internet Profile) is a powerful and efficient tool designed to simplify the process of finding information about individuals across various platforms.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className + " bg-gray-100"}>{children}</body>
+      <body className={inter.className}>
+        {children}
+      </body>
     </html>
   );
 }
