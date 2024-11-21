@@ -6,7 +6,8 @@
 import { useState, useEffect } from "react";
 
 const useProfile = () => {
-  const [currentPage, setCurrentPage] = useState("form"); // form | profiles | summary
+  // 0: search, 1: profiles, 2: summary, 3: reset
+  const [activeTab, setActiveTab] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -109,10 +110,10 @@ const useProfile = () => {
       const { _profiles, _searchQuery } = await fetchProfiles(formData);
 
       if (formData.process === "manual") {
-        setCurrentPage("profiles");
+        setActiveTab(1);
       } else {
         const { _profileSummary } = await fetchSummary(_profiles);
-        setCurrentPage("summary");
+        setActiveTab(2);
       }
     } catch (error) {
       alert(error.message);
@@ -153,7 +154,7 @@ const useProfile = () => {
 
     try {
       await fetchSummary(profiles);
-      setCurrentPage("summary");
+      setActiveTab(2);
     } catch (error) {
       alert(error.message);
     } finally {
@@ -193,7 +194,7 @@ const useProfile = () => {
       });
       setProfiles([]);
       setIsSubmitting(false);
-      setCurrentPage("form");
+      setActiveTab(0);
       setProfileSummary("");
     }
   };
@@ -203,7 +204,7 @@ const useProfile = () => {
   }, []);
 
   return {
-    currentPage,
+    activeTab,
     formData,
     profiles,
     profileSummary,
@@ -212,7 +213,7 @@ const useProfile = () => {
     handleProfileSave,
     handleProfileSelect,
     handleProfileSubmit,
-    setCurrentPage,
+    setActiveTab,
     resetApp,
     isSubmitting,
   };
