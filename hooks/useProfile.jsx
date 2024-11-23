@@ -7,6 +7,7 @@ const useProfile = ({
   profiles,
   setProfiles,
   setNewProfile,
+  fetchProfileContent,
 }) => {
   const fetchProfiles = async () => {
     const response = await fetch("/api/search", {

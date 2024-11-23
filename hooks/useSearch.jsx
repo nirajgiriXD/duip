@@ -1,6 +1,7 @@
 "use client";
 
 const useSearch = ({
+  formData,
   setFormData,
   setIsSubmitting,
   setActiveTab,

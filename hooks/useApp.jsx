@@ -67,9 +67,11 @@ const useApp = () => {
     profiles,
     setProfiles,
     setNewProfile,
+    fetchProfileContent,
   });
 
   const { handleFormDataChange, handleFormSubmit } = useSearch({
+    formData,
     setFormData,
     setIsSubmitting,
     setActiveTab,
