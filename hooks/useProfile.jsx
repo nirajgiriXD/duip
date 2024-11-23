@@ -1,42 +1,13 @@
 "use client";
 
-/**
- * External dependencies.
- */
-import { useState, useEffect } from "react";
-
-const useProfile = () => {
-  // 0: search, 1: profiles, 2: summary, 3: reset
-  const [activeTab, setActiveTab] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    username: "",
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    profession: "",
-    organization: "",
-    process: "automatic",
-  });
-  const [profiles, setProfiles] = useState([]);
-  const [profileSummary, setProfileSummary] = useState("");
-
-  const handleFormDataChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prev) => {
-      const data = {
-        ...prev,
-        [name]: value,
-      };
-
-      // Save the form data in local storage
-      localStorage.setItem("form", JSON.stringify(data));
-
-      return data;
-    });
-  };
-
+const useProfile = ({
+  setActiveTab,
+  setIsSubmitting,
+  formData,
+  profiles,
+  setProfiles,
+  setNewProfile,
+}) => {
   const fetchProfiles = async () => {
     const response = await fetch("/api/search", {
       method: "POST",
@@ -54,7 +25,7 @@ const useProfile = () => {
 
       // Save the stringified JSON object to local storage
       localStorage.setItem("profiles", JSON.stringify(_profiles));
-      localStorage.setItem("searchQuery", JSON.stringify(_searchQuery));
+      localStorage.setItem("search-query", JSON.stringify(_searchQuery));
 
       // Set profiles by merging the new profiles with the saved profiles
       setProfiles((prev) => {
@@ -71,60 +42,9 @@ const useProfile = () => {
     }
   };
 
-  const fetchSummary = async (_profiles) => {
-    // Filter the selected profiles
-    _profiles = _profiles.filter((item) => item.isSelected);
-    if (_profiles.length === 0) {
-      setIsSubmitting(false);
-      throw new Error("Please select at least one profile to summarize.");
-    }
-
-    const response = await fetch("/api/summarize", {
-      method: "POST",
-      body: JSON.stringify({ searchResults: _profiles }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-
-      // Retrive data from the response data
-      const _profileSummary = data.profileSummary || "";
-
-      // Save the stringified JSON object to local storage
-      localStorage.setItem("profile-summary", JSON.stringify(_profileSummary));
-
-      // Set profiles
-      setProfileSummary(_profileSummary);
-
-      return { _profileSummary };
-    } else {
-      throw new Error(data.message);
-    }
-  };
-
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const { _profiles, _searchQuery } = await fetchProfiles(formData);
-
-      if (formData.process === "manual") {
-        setActiveTab(1);
-      } else {
-        const { _profileSummary } = await fetchSummary(_profiles);
-        setActiveTab(2);
-      }
-    } catch (error) {
-      alert(error.message);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleProfileSelect = (url) => {
+  const handleProfileSelect = (profile) => {
     const _profiles = profiles.map((item) => {
-      if (item.url === url) {
+      if (item.url === profile.url) {
         item.isSelected = !item.isSelected;
       }
 
@@ -135,9 +55,9 @@ const useProfile = () => {
     localStorage.setItem("profiles", JSON.stringify(_profiles));
   };
 
-  const handleProfileSave = (url) => {
+  const handleProfileSave = (profile) => {
     const _profiles = profiles.map((item) => {
-      if (item.url === url) {
+      if (item.url === profile.url) {
         item.isSaved = !item.isSaved;
       }
 
@@ -149,11 +69,11 @@ const useProfile = () => {
   };
 
   const handleProfileSubmit = async (event) => {
-    event.preventDefault();
+    event?.preventDefault();
     setIsSubmitting(true);
 
     try {
-      await fetchSummary(profiles);
+      await fetchProfileContent(profiles);
       setActiveTab(2);
     } catch (error) {
       alert(error.message);
@@ -162,60 +82,60 @@ const useProfile = () => {
     }
   };
 
-  const loadDataFromLocalStorage = async () => {
-    // Retrieve the stringified JSON data from local storage
-    const _formData = localStorage.getItem("form");
-    const _profiles = localStorage.getItem("profiles");
-    const _profileSummary = localStorage.getItem("profile-summary");
+  const addProfile = (profile) => {
+    if (profiles.some((item) => item.url === profile.url)) {
+      alert("Profile already added.");
+      return false;
+    }
 
-    // Convert into JSON
-    const __formData = (await JSON.parse(_formData)) || formData;
-    const __profiles = (await JSON.parse(_profiles)) || [];
-    const __profileSummary = (await JSON.parse(_profileSummary)) || "";
+    if (profile.title === "" || profile.url === "") {
+      alert("Please provide a title and URL for the profile.");
+      return false;
+    }
 
-    // Set the data
-    setFormData(__formData);
-    setProfiles(__profiles);
-    setProfileSummary(__profileSummary);
+    // Construct and add the new profile object
+    const _profiles = [
+      {
+        ...profile,
+        isSelected: profile.isSelected === "true",
+        isSaved: profile.isSaved === "true",
+      },
+      ...profiles
+    ];
+
+    // Save the data
+    setProfiles(_profiles);
+    localStorage.setItem("profiles", JSON.stringify(_profiles));
+    alert("Profile added successfully.");
+    return true;
   };
 
-  const resetApp = () => {
-    if (confirm("Are you sure you want to reset the app?")) {
-      localStorage.clear();
-      setFormData({
-        username: "",
-        name: "",
-        email: "",
-        phone: "",
-        address: "",
-        profession: "",
-        organization: "",
-        process: "automatic",
-      });
-      setProfiles([]);
-      setIsSubmitting(false);
-      setActiveTab(0);
-      setProfileSummary("");
+  const removeProfile = (profile) => {
+    if (confirm(`Are you sure you want to remove "${profile.title}"?`)) {
+      const _profiles = profiles.filter((item) => item.url !== profile.url);
+      setProfiles(_profiles);
+      localStorage.setItem("profiles", JSON.stringify(_profiles));
     }
   };
 
-  useEffect(() => {
-    loadDataFromLocalStorage();
-  }, []);
+  const handleProfileFormChange = (event) => {
+    const { name, value } = event.target;
+    setNewProfile((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      }
+    });
+  };
 
   return {
-    activeTab,
-    formData,
-    profiles,
-    profileSummary,
-    handleFormDataChange,
-    handleFormSubmit,
+    addProfile,
+    removeProfile,
+    fetchProfiles,
+    handleProfileFormChange,
     handleProfileSave,
     handleProfileSelect,
     handleProfileSubmit,
-    setActiveTab,
-    resetApp,
-    isSubmitting,
   };
 };
 
