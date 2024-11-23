@@ -10,9 +10,19 @@ import path from "path";
  *
  * @returns string
  */
-const getSearchResultContentSummary = async (content) => {
+const getSearchResultContentSummary = async (content, dataAnalystType) => {
     let contentSummary = "";
     const LLAMA_MODEL_NAME = process.env.LLAMA_MODEL_NAME;
+
+    const prompts = {
+        general: `Act as a personal analyst and create a concise summary of an individual's key attributes and insights. Begin with an "Overview" that evaluates the following aspects: personality, economic status, social status, relationship status, age, and any other relevant characteristics. Use only the available data—exclude unsupported details, ads, navigation text, or unrelated information. Organize the summary into clearly defined sections with descriptive headings. Maintain a neutral tone, avoid repetition, and present the response as if it reflects your own analysis based on the data you collected. The data gathered from various internet sources is as follows: ${content}`,
+        hr: `Act as a personal analyst and create a concise summary of an individual's key attributes and insights. Begin with an "Overview" that evaluates the following aspects: personality, economic status, social status, relationship status, age, and any other relevant characteristics. Use only the available data—exclude unsupported details, ads, navigation text, or unrelated information. Organize the summary into clearly defined sections with descriptive headings. Maintain a neutral tone, avoid repetition, and present the response as if it reflects your own analysis based on the data you collected. The data gathered from various internet sources is as follows: ${content}`
+    };
+
+    const acceptedDataAnalystTypes = Object.keys(prompts);
+    if (!acceptedDataAnalystTypes.includes(dataAnalystType)) {
+        throw new Error("Invalid data analyst type");
+    }
 
     try {
         const __filename = fileURLToPath(import.meta.url);
@@ -28,7 +38,7 @@ const getSearchResultContentSummary = async (content) => {
         });
 
         // Generate prompt to summarize the content
-        const prompt = `Act as a personal analyst and create a concise summary of an individual's key attributes and insights. Begin with an "Overview" that evaluates the following aspects: personality, economic status, social status, relationship status, age, and any other relevant characteristics. Use only the available data—exclude unsupported details, ads, navigation text, or unrelated information. Organize the summary into clearly defined sections with descriptive headings. Maintain a neutral tone, avoid repetition, and present the response as if it reflects your own analysis based on the data you collected. The data gathered from various internet sources is as follows: ${content}`;
+        const prompt = prompts[dataAnalystType];
 
         contentSummary = await session.prompt(prompt);
     } catch (error) {
