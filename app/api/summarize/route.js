@@ -1,18 +1,17 @@
 /**
  * Internal dependencies.
  */
-import { getSearchResultContentSummary, getSearchResultContent } from "@utilities";
+import { getSearchResultContentSummary } from "@utilities";
 
 export const POST = async (req, res) => {
-  const { searchResults } = await req.json();
+  const { profileContent, dataAnalystType } = await req.json();
 
   // Summarize search result.
-  const searchContent = await getSearchResultContent(searchResults);
-  const searchResultsSummary = await getSearchResultContentSummary(searchContent);
+  const profileContentSummary = await getSearchResultContentSummary(profileContent, dataAnalystType);
 
   // Prepare response.
   const response = {
-    profileSummary: searchResultsSummary,
+    profileSummary: profileContentSummary,
   };
 
   return new Response(JSON.stringify(response), {
