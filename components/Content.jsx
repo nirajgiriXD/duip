@@ -54,7 +54,9 @@ const Content = () => {
                     className="block w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none"
                   >
                     <option value="general">General</option>
+                    <option value="investor">Investor</option>
                     <option value="hr">HR</option>
+                    <option value="matchmaker">Matchmaker</option>
                   </select>
 
                   {/* Submit */}
