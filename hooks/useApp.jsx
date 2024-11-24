@@ -43,7 +43,7 @@ const useApp = () => {
     setIsSubmitting,
   });
 
-  const { fetchProfileContent, handleContentSubmit } = useContent({
+  const { fetchProfileContent, handleContentChange, handleContentSubmit } = useContent({
     setIsSubmitting,
     setProfileContent,
     fetchProfileSummary,
@@ -143,6 +143,7 @@ const useApp = () => {
     handleProfileFormChange,
     setDataAnalystType,
     setActiveTab,
+    handleContentChange,
     isProfileFormOpen,
     setIsProfileFormOpen,
     addProfile,

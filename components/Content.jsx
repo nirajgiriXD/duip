@@ -1,7 +1,6 @@
 /**
  * External dependencies.
  */
-import Markdown from "markdown-to-jsx";
 import ClipLoader from "react-spinners/ClipLoader";
 
 /**
@@ -13,6 +12,7 @@ import { NothingFoundCard } from "@components";
 const Content = () => {
   const {
     profileContent,
+    handleContentChange,
     handleContentSubmit,
     dataAnalystType,
     setDataAnalystType,
@@ -23,15 +23,14 @@ const Content = () => {
   return (
     <div className="h-full">
       <div
-        id="profile-container"
-        className="text-gray-800 overflow-auto max-h-[420px]"
+        className="text-gray-800 overflow-auto max-h-[420px] h-full"
       >
         {profileContent === "" ? (
           <NothingFoundCard />
         ) : (
-          <div className="text-sm border rounded-md px-4 py-2">
+          <div className="text-sm border rounded-md px-4 py-2 h-full">
             {/* Profile Content */}
-            <Markdown>{profileContent}</Markdown>
+            <textarea id="profile-container" className="w-full h-full resize-none focus:outline-none" onInput={handleContentChange} disabled={!isManual} value={profileContent} rows={14} />
 
             {/* Footer */}
             {isManual && (

@@ -39,6 +39,12 @@ const useContent = ({
     }
   };
 
+  const handleContentChange = (event) => {
+    const _profileContent = event.target.value;
+    setProfileContent(_profileContent);
+    localStorage.setItem("profile-content", JSON.stringify(_profileContent));
+  };
+
   const handleContentSubmit = async (event) => {
     event?.preventDefault();
     setIsSubmitting(true);
@@ -55,6 +61,7 @@ const useContent = ({
 
   return {
     fetchProfileContent,
+    handleContentChange,
     handleContentSubmit,
   };
 };
