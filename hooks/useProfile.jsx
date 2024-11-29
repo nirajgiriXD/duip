@@ -7,6 +7,7 @@ const useProfile = ({
   profiles,
   setProfiles,
   setNewProfile,
+  setIsProfileFormOpen ,
   fetchProfileContent,
 }) => {
   const fetchProfiles = async () => {
@@ -107,6 +108,18 @@ const useProfile = ({
     // Save the data
     setProfiles(_profiles);
     localStorage.setItem("profiles", JSON.stringify(_profiles));
+
+    // Reset the form
+    setNewProfile({
+      title: "",
+      imageUrl: "",
+      url: "",
+      isSelected: "true",
+      isSaved: "true",
+    });
+
+    setIsProfileFormOpen(false);
+
     alert("Profile added successfully.");
     return true;
   };

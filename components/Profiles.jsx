@@ -36,7 +36,7 @@ const Profiles = () => {
           <>
             {/* Table */}
             {isProfileFormOpen ? (
-              <form method="POST" onSubmit={() => addProfile(newProfile)}>
+              <form method="POST">
                 <div className="text-base leading-6 flex flex-col gap-4 text-gray-700 sm:text-lg sm:leading-7 border rounded-md p-4">
                   {/* Title */}
                   <div className="flex flex-col">
@@ -178,17 +178,7 @@ const Profiles = () => {
 
                 {/* Submit Button */}
                 <button
-                  className="bg-blue-400 hover:bg-blue-500 flex justify-center items-center w-full text-white p-2 rounded-md focus:outline-none transition-all" type="submit" disabled={isSubmitting} onClick={isProfileFormOpen ? () => {
-                    if(addProfile(newProfile)) {
-                      setNewProfile({
-                        title: "",
-                        imageUrl: "",
-                        url: "",
-                        isSelected: "true",
-                        isSaved: "false",
-                      });
-                    }
-                  } : () => handleProfileSubmit()}
+                  className="bg-blue-400 hover:bg-blue-500 flex justify-center items-center w-full text-white p-2 rounded-md focus:outline-none transition-all" type="submit" disabled={isSubmitting} onClick={isProfileFormOpen ? () => addProfile(newProfile) : () => handleProfileSubmit()}
                 >
                   {isSubmitting ? (
                     <ClipLoader

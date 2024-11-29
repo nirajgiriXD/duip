@@ -67,6 +67,7 @@ const useApp = () => {
     profiles,
     setProfiles,
     setNewProfile,
+    setIsProfileFormOpen,
     fetchProfileContent,
   });
 
