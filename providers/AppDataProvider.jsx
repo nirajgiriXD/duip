@@ -22,7 +22,7 @@ const AppDataProvider = ({ children }) => {
     process: "automatic",
   });
   const [profileContent, setProfileContent] = useState("");
-  const [dataAnalystType, setDataAnalystType] = useState("general");
+  const [dataAnalystType, setDataAnalystType] = useState("researcher");
   const [profiles, setProfiles] = useState([]);
   const [profileSummary, setProfileSummary] = useState("");
   const [newProfile, setNewProfile] = useState({
