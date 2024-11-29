@@ -25,20 +25,19 @@ const useProfile = ({
       const _profiles = data.profiles || [];
       const _searchQuery = data.searchQuery || "";
 
+      // Merge with the saved profiles
+      const savedProfiles = profiles.filter((profile) => profile.isSaved);
+      const newProfiles = _profiles.filter(item => !savedProfiles.some(profile => profile.url === item.url));
+      const mergedProfiles = [...savedProfiles, ...newProfiles];
+
       // Save the stringified JSON object to local storage
-      localStorage.setItem("profiles", JSON.stringify(_profiles));
+      localStorage.setItem("profiles", JSON.stringify(mergedProfiles));
       localStorage.setItem("search-query", JSON.stringify(_searchQuery));
 
       // Set profiles by merging the new profiles with the saved profiles
-      setProfiles((prev) => {
-        const savedProfiles = prev.filter((profile) => profile.isSaved);
-        return [
-          ...savedProfiles,
-          ..._profiles.filter(item => !savedProfiles.some(profile => profile.url === item.url))
-        ];
-      });
+      setProfiles(mergedProfiles);
 
-      return { _profiles, _searchQuery };
+      return { _profiles: mergedProfiles, _searchQuery };
     } else {
       throw new Error(data.message);
     }
