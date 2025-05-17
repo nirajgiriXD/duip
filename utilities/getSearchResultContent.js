@@ -12,8 +12,14 @@ const getSearchResultContent = async (searchResults) => {
   // Use puppeteer stealth plugin.
   puppeteer.use(stealthPluginPuppeteer());
 
+  const puppeteerArgs = ["--start-maximized"];
+  if (process.env.PROXY_SERVER) {
+    puppeteerArgs.push(`--proxy-server=${process.env.PROXY_SERVER}`);
+  }
+
   const browser = await puppeteer.launch({
-    headless: "new",
+    headless: process.env.HEADLESS === "false" ? false : process.env.HEADLESS,
+    args: puppeteerArgs,
   });
   const page = await browser.newPage();
 

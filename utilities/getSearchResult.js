@@ -13,8 +13,14 @@ const getSearchResult = async (searchQuery) => {
   // Use puppeteer stealth plugin.
   puppeteer.use(stealthPluginPuppeteer());
 
+  const puppeteerArgs = ["--start-maximized"];
+  if (process.env.PROXY_SERVER) {
+    puppeteerArgs.push(`--proxy-server=${process.env.PROXY_SERVER}`);
+  }
+
   const browser = await puppeteer.launch({
-    headless: "new",
+    headless: process.env.HEADLESS === "false" ? false : process.env.HEADLESS,
+    args: puppeteerArgs,
   });
   const page = await browser.newPage();
 
@@ -26,7 +32,7 @@ const getSearchResult = async (searchQuery) => {
   await page.goto(searchQuery);
 
   // Wait for the search results page to load.
-  await page.waitForSelector("div.g");
+  await page.waitForSelector("div#rso");
 
   // Scroll the page 3 times
   for (let i = 0; i < 3; i++) {
@@ -41,7 +47,7 @@ const getSearchResult = async (searchQuery) => {
   // Extract search results.
   const searchResults = await page.evaluate(() => {
     const results = [];
-    const resultElements = document.querySelectorAll("div.g");
+    const resultElements = document.querySelectorAll("div#rso > div");
 
     resultElements.forEach((resultElement) => {
       const linkElement = resultElement.querySelector("a");
@@ -64,7 +70,13 @@ const getSearchResult = async (searchQuery) => {
 
         // Check if the URL contains any of the exclude patterns.
         if (!url.includes("google.com")) {
-          results.push({ title, url, imageUrl, isSelected: true, isSaved: false });
+          results.push({
+            title,
+            url,
+            imageUrl,
+            isSelected: true,
+            isSaved: false,
+          });
         }
       }
     });
