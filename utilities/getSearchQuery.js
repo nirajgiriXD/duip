@@ -12,38 +12,20 @@ const getSearchQuery = ({
   profession,
   organization,
 }) => {
-  // Start with the base search query URL
-  let finalQuery = "https://www.google.com/search?q=";
+  // Collect all query parts
+  const queryParts = [];
 
-  // Helper function to add parameter to the search query
-  const addParameterToSearchQuery = (parameter) => {
-    if (parameter) {
-      const isFirstParameter =
-        finalQuery === "https://www.google.com/search?q=";
-      const filteredParameter = parameter.replaceAll(" ", "+");
-      finalQuery += isFirstParameter
-        ? filteredParameter
-        : `+${filteredParameter}`;
-    }
-  };
+  if (name) queryParts.push(`intext:"${name}"`);
+  if (username) queryParts.push(`inurl:"${username}"`);
+  if (email) queryParts.push(`intext:"${email}"`);
+  if (phone) queryParts.push(`intext:"${phone}"`);
+  if (profession) queryParts.push(`~${profession}`);
+  if (address) queryParts.push(`intext:"${address}"`);
+  if (organization) queryParts.push(`intext:"${organization}"`);
 
-  /**
-   * ASCII Encoding Reference
-   *
-   * %20    space
-   * %22    "
-   * %27    '
-   * %3A    :
-   */
-
-  // Add parameters to search query
-  addParameterToSearchQuery(name ? `intext%3A"${name}"` : "");
-  addParameterToSearchQuery(username ? `inurl%3A"${username}"` : "");
-  addParameterToSearchQuery(email ? `intext%3A"${email}"` : "");
-  addParameterToSearchQuery(phone ? `intext%3A"${phone}"` : "");
-  addParameterToSearchQuery(profession ? `~${profession}` : "");
-  addParameterToSearchQuery(address ? `intext%3A"${address}"` : "");
-  addParameterToSearchQuery(organization ? `intext%3A"${organization}"` : "");
+  // Join all parts with spaces and encode
+  const query = queryParts.join(' ');
+  const finalQuery = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
 
   return finalQuery;
 };
