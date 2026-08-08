@@ -1,9 +1,7 @@
-"use client";
-
 /**
  * Internal dependencies.
  */
-import { Container } from "@components";
+import Container from "@/components/Container";
 import AppDataProvider from "@providers/AppDataProvider";
 
 const App = () => {

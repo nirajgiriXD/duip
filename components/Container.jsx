@@ -3,75 +3,85 @@
 /**
  * Internal dependencies.
  */
-import { Form, Profiles, Content, Summary } from "@components";
+import AppHeader from "./AppHeader";
+import Content from "./Content";
+import ErrorBanner from "./ErrorBanner";
+import Form from "./Form";
+import Profiles from "./Profiles";
+import RunStatus from "./RunStatus";
+import StepNav from "./StepNav";
+import Summary from "./Summary";
 import useApp from "@hooks/useApp";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const panels = [Form, Profiles, Content, Summary];
+
+/** Shown until the previous session has been read back from local storage. */
+const PanelSkeleton = () => (
+  <Card aria-hidden="true">
+    <CardHeader className="space-y-2">
+      <Skeleton className="h-5 w-48" />
+      <Skeleton className="h-4 w-72 max-w-full" />
+    </CardHeader>
+    <CardContent className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <div key={index} className="space-y-2">
+            <Skeleton className="h-3.5 w-24" />
+            <Skeleton className="h-9 w-full" />
+          </div>
+        ))}
+      </div>
+      <Skeleton className="h-10 w-full" />
+    </CardContent>
+  </Card>
+);
 
 const Container = () => {
-  const { activeTab, setActiveTab, resetApp } = useApp();
+  const { activeTab, isHydrated } = useApp();
 
-  const tabs = [
-    {
-      name: "Search",
-      component: <Form />,
-    },
-    {
-      name: "Profiles",
-      component: <Profiles />,
-    },
-    {
-      name: "Content",
-      component: <Content />,
-    },
-    {
-      name: "Summary",
-      component: <Summary />,
-    },
-    {
-      name: "Reset",
-      action: resetApp,
-    },
-  ];
+  const ActivePanel = panels[activeTab] ?? Form;
 
   return (
-    <main className="relative min-h-screen w-full bg-gray-50 text-gray-800">
-      <div className="py-4 flex flex-col justify-center sm:py-8">
-        <div className="relative py-3 sm:mx-auto max-w-screen-md w-full">
-          <div className="relative px-4 py-8 bg-white mx-8 md:mx-0 shadow rounded-2xl sm:p-8">
-            <div className="mx-auto max-h-[540px] min-w-full">
-              {/* Tabs */}
-              <div className="w-full flex gap-1 mb-6">
-                {tabs.map((tab, index) => (
-                  <button
-                    key={index}
-                    className={`flex-1 py-2 rounded-md text-sm font-medium transition-all
-                      ${
-                        activeTab === index && !tab.action
-                          ? "bg-blue-400 text-white hover:bg-blue-500"
-                          : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                      }`}
-                    onClick={() => {
-                      if (tab.action) {
-                        tab.action();
-                      } else {
-                        setActiveTab(index);
-                      }
-                    }}
-                  >
-                    {tab.name}
-                  </button>
-                ))}
-              </div>
+    <div className="relative flex min-h-svh flex-col">
+      {/* Decorative backdrop */}
+      <div
+        aria-hidden="true"
+        className="bg-grid pointer-events-none fixed inset-0 -z-10 opacity-60 mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,black,transparent)]"
+      />
 
-              {/* Tab Content */}
-              {tabs[activeTab] &&
-                !tabs[activeTab].action &&
-                tabs[activeTab].component}
+      <AppHeader />
+
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <div className="space-y-5 sm:space-y-6">
+          <StepNav />
+
+          <RunStatus />
+          <ErrorBanner />
+
+          {isHydrated ? (
+            <div
+              key={activeTab}
+              className="animate-in fade-in slide-in-from-bottom-1 duration-300"
+            >
+              <ActivePanel />
             </div>
-          </div>
+          ) : (
+            <PanelSkeleton />
+          )}
         </div>
-      </div>
-    </main>
-  )
-}
+      </main>
 
-export default Container
+      <footer className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+        <p className="text-muted-foreground text-center text-xs text-balance">
+          Everything runs on this machine — searches go through a local headless
+          browser and summaries are written by a local language model. Use the
+          results responsibly.
+        </p>
+      </footer>
+    </div>
+  );
+};
+
+export default Container;

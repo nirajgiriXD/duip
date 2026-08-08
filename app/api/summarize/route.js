@@ -3,18 +3,37 @@
  */
 import { getSearchResultContentSummary } from "@utilities";
 
-export const POST = async (req, res) => {
-  const { profileContent, dataAnalystType } = await req.json();
+export const runtime = "nodejs";
+export const maxDuration = 300;
 
-  // Summarize search result.
-  const profileContentSummary = await getSearchResultContentSummary(profileContent, dataAnalystType);
+export const POST = async (request) => {
+  try {
+    const { profileContent, dataAnalystType } = await request.json();
 
-  // Prepare response.
-  const response = {
-    profileSummary: profileContentSummary,
-  };
+    if (!profileContent) {
+      return Response.json(
+        { message: "There is no profile content to summarize." },
+        { status: 400 }
+      );
+    }
 
-  return new Response(JSON.stringify(response), {
-    status: 200,
-  });
+    // Summarize search result.
+    const profileContentSummary = await getSearchResultContentSummary(
+      profileContent,
+      dataAnalystType
+    );
+
+    return Response.json({ profileSummary: profileContentSummary });
+  } catch (error) {
+    console.error("Summarizing profile content failed:", error);
+
+    return Response.json(
+      {
+        message:
+          error?.message ||
+          "The profile content could not be summarized. Please try again.",
+      },
+      { status: 500 }
+    );
+  }
 };

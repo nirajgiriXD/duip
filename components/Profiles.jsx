@@ -3,203 +3,428 @@
 /**
  * External dependencies.
  */
-import ClipLoader from "react-spinners/ClipLoader";
+import { useState } from "react";
+import {
+  BookmarkIcon,
+  ExternalLinkIcon,
+  GlobeIcon,
+  Loader2Icon,
+  PlusIcon,
+  SearchIcon,
+  Trash2Icon,
+  UsersIcon,
+} from "lucide-react";
 
 /**
- * internal dependencies.
+ * Internal dependencies.
  */
 import useApp from "@hooks/useApp";
-import { NothingFoundCard } from "@components";
+import EmptyState from "./EmptyState";
+import ProfileDialog from "./ProfileDialog";
+import { cn } from "@/lib/utils";
+import { STEP_INDEX } from "@/lib/constants";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+/** Readable host for a result URL, used as the secondary line. */
+const getHostname = (url) => {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+};
+
+const ProfileAvatar = ({ profile }) => (
+  <Avatar className="size-8 rounded-lg border">
+    <AvatarImage src={profile.imageUrl || undefined} alt="" />
+    <AvatarFallback className="rounded-lg text-xs">
+      <GlobeIcon className="text-muted-foreground size-3.5" />
+    </AvatarFallback>
+  </Avatar>
+);
+
+const ProfileActions = ({ profile, onSave, onRemove }) => (
+  <div className="flex items-center gap-0.5">
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => onSave(profile)}
+          aria-pressed={Boolean(profile.isSaved)}
+          aria-label={
+            profile.isSaved
+              ? `Stop keeping ${profile.title} across searches`
+              : `Keep ${profile.title} across searches`
+          }
+          className={cn(
+            profile.isSaved
+              ? "text-primary hover:text-primary"
+              : "text-muted-foreground"
+          )}
+        >
+          <BookmarkIcon className={cn(profile.isSaved && "fill-current")} />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        {profile.isSaved ? "Kept across searches" : "Keep across searches"}
+      </TooltipContent>
+    </Tooltip>
+
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          asChild
+          variant="ghost"
+          size="icon-sm"
+          className="text-muted-foreground"
+        >
+          <a
+            href={profile.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Open ${profile.title} in a new tab`}
+          >
+            <ExternalLinkIcon />
+          </a>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Open in a new tab</TooltipContent>
+    </Tooltip>
+
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => onRemove(profile)}
+          aria-label={`Remove ${profile.title}`}
+          className="text-muted-foreground hover:text-destructive"
+        >
+          <Trash2Icon />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Remove from the list</TooltipContent>
+    </Tooltip>
+  </div>
+);
 
 const Profiles = () => {
   const {
-    isProfileFormOpen,
-    setIsProfileFormOpen,
-    newProfile,
     isManual,
     profiles,
     isSubmitting,
-    addProfile,
+    selectedProfileCount,
     removeProfile,
     handleProfileSave,
     handleProfileSelect,
+    setAllProfilesSelected,
     handleProfileSubmit,
-    handleProfileFormChange,
+    setActiveTab,
+    setIsProfileFormOpen,
   } = useApp();
 
-  return (
-    <div id="profile-container" className="overflow-auto max-h-[490px]">
-      <div className="h-full">
-        {profiles.length === 0 ? (
-          <NothingFoundCard />
-        ) : (
-          <>
-            {/* Table */}
-            {isProfileFormOpen ? (
-              <form method="POST">
-                <div className="text-base leading-6 flex flex-col gap-4 text-gray-700 sm:text-lg sm:leading-7 border rounded-md p-4">
-                  {/* Title */}
-                  <div className="flex flex-col">
-                    <label className="text-sm leading-loose">
-                      Profile Title
-                    </label>
-                    <input
-                      type="text"
-                      className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                      name="title"
-                      value={newProfile.title}
-                      onChange={handleProfileFormChange}
-                      placeholder="Title"
-                    />
-                  </div>
+  const [profileToRemove, setProfileToRemove] = useState(null);
 
-                  {/* Profile URL */}
-                  <div className="flex flex-col">
-                    <label className="text-sm leading-loose">
-                      Profile URL
-                    </label>
-                    <input
-                      type="url"
-                      className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                      name="url"
-                      value={newProfile.url}
-                      onChange={handleProfileFormChange}
-                      placeholder="https://example.com"
-                    />
-                  </div>
+  const allSelected =
+    profiles.length > 0 && selectedProfileCount === profiles.length;
 
-                  {/* Profile Image URL */}
-                  <div className="flex flex-col">
-                    <label className="text-sm leading-loose">
-                      Profile Image URL
-                    </label>
-                    <input
-                      type="url"
-                      className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                      name="imageUrl"
-                      value={newProfile.imageUrl}
-                      onChange={handleProfileFormChange}
-                      placeholder="https://example.com"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Selected */}
-                    <div className="flex flex-col">
-                      <label className="text-sm leading-loose">
-                        Is profile selected?
-                      </label>
-                      <select
-                        onChange={handleProfileFormChange}
-                        value={newProfile.isSelected ? "true" : "false"}
-                        name="isSelected"
-                        className="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 disabled:bg-blue-gray-50"
-                      >
-                        <option value="true">True</option>
-                        <option value="false">False</option>
-                      </select>
-                    </div>
-
-                    {/* Saved */}
-                    <div className="flex flex-col">
-                      <label className="text-sm leading-loose">
-                        Is profile saved?
-                      </label>
-                      <select
-                        onChange={handleProfileFormChange}
-                        value={newProfile.isSaved ? "true" : "false"}
-                        name="isSaved"
-                        className="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 disabled:bg-blue-gray-50"
-                      >
-                        <option value="true">True</option>
-                        <option value="false">False</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            ) : (
-              <table className="min-w-full bg-transparent border-collapse whitespace-nowrap">
-                <thead>
-                  <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                    <th className="py-2 px-4 text-center">
-                      {isManual
-                        ? "Actions"
-                        : "#"}
-                    </th>
-                    <th className="py-2 px-4 text-center">
-                      Image
-                    </th>
-                    <th className="py-2 px-4 text-left">
-                      Title
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="text-gray-600 text-sm font-light">
-                  {profiles.map((item, index) => {
-                    return (
-                      <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
-                        <th scope="row" className="py-2 px-4 text-left">
-                          {isManual ? (
-                            <div className="flex items-center justify-center gap-4">
-                              <button onClick={() => handleProfileSelect(item)} title="Select profile for analysis">
-                                {item.isSelected ? "✅" : "✖"}
-                              </button>
-                              <button onClick={() => handleProfileSave(item)} title="Save profile for next search">
-                                {item.isSaved ? "💚" : "🤍"}
-                              </button>
-                              <button onClick={() => removeProfile(item)} title="Remove profile from analysis">🗑️</button>
-                              <a href={item.url} target="_blank" rel="noopener noreferrer" title="Open link in new tab">🔗</a>
-                            </div>
-                          ) : (
-                            index + 1
-                          )}
-                        </th>
-                        <td className="py-2 px-4 flex justify-center">
-                          <img src={item.imageUrl} className="rounded w-6 h-6" />
-                        </td>
-                        <td className="py-2 px-4 text-left" title={item.title}>
-                          {item.title}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-
-            {/* Submit */}
-            {isManual && (
-              <div className="mt-6 flex gap-4 text-sm">
-                {/* Add Profile Button */}
-                <button className="bg-transparent hover:bg-blue-400 text-blue-600 font-semibold hover:text-white p-2 border border-blue-400 hover:border-transparent w-full rounded" onClick={() => setIsProfileFormOpen((prev) => !prev)}>
-                  {isProfileFormOpen ? "Close Profile Form" : "Open Profile Form"}
-                </button>
-
-                {/* Submit Button */}
-                <button
-                  className="bg-blue-400 hover:bg-blue-500 flex justify-center items-center w-full text-white p-2 rounded-md focus:outline-none transition-all" type="submit" disabled={isSubmitting} onClick={isProfileFormOpen ? () => addProfile(newProfile) : () => handleProfileSubmit()}
+  if (profiles.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle asChild>
+            <h2>Profiles</h2>
+          </CardTitle>
+          <CardDescription>
+            Public results found across the web. Keep the ones worth reading.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <EmptyState
+            icon={UsersIcon}
+            title="No profiles yet"
+            description="Run a search to collect public results, or add a page you already know about."
+            action={
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Button onClick={() => setActiveTab(STEP_INDEX.search)}>
+                  <SearchIcon aria-hidden="true" />
+                  Go to search
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsProfileFormOpen(true)}
                 >
-                  {isSubmitting ? (
-                    <ClipLoader
-                      color="#ffffff"
-                      loading={
-                        isSubmitting
-                      }
-                      size={20}
-                      aria-label="Loading Spinner"
-                      className="h-full"
+                  <PlusIcon aria-hidden="true" />
+                  Add manually
+                </Button>
+              </div>
+            }
+          />
+          {/* Mounted so the "Add manually" button above can open it. */}
+          <ProfileDialog hideTrigger />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle asChild>
+            <h2>Profiles</h2>
+          </CardTitle>
+          <CardDescription>
+            {isManual
+              ? "Choose which results the analysis should be based on."
+              : "The results this run was based on."}
+          </CardDescription>
+
+          <CardAction className="flex items-center gap-2">
+            <Badge variant="secondary" className="tabular-nums">
+              {profiles.length} found
+            </Badge>
+            {isManual && (
+              <Badge variant="outline" className="tabular-nums">
+                {selectedProfileCount} selected
+              </Badge>
+            )}
+          </CardAction>
+        </CardHeader>
+
+        <CardContent className="space-y-4">
+          {isManual && (
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setAllProfilesSelected(!allSelected)}
+              >
+                {allSelected ? "Clear selection" : "Select all"}
+              </Button>
+              <ProfileDialog />
+            </div>
+          )}
+
+          {/* Desktop: table */}
+          <div className="hidden overflow-hidden rounded-xl border md:block">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="w-12">
+                    {isManual ? (
+                      <span className="sr-only">Include</span>
+                    ) : (
+                      <span className="sr-only">Position</span>
+                    )}
+                  </TableHead>
+                  <TableHead className="w-14">
+                    <span className="sr-only">Thumbnail</span>
+                  </TableHead>
+                  <TableHead>Result</TableHead>
+                  {isManual && (
+                    <TableHead className="w-32 text-right">Actions</TableHead>
+                  )}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {profiles.map((profile, index) => (
+                  <TableRow
+                    key={profile.url}
+                    data-state={
+                      isManual && profile.isSelected ? "selected" : undefined
+                    }
+                  >
+                    <TableCell>
+                      {isManual ? (
+                        <Checkbox
+                          checked={Boolean(profile.isSelected)}
+                          onCheckedChange={() => handleProfileSelect(profile)}
+                          aria-label={`Include ${profile.title} in the analysis`}
+                        />
+                      ) : (
+                        <span className="text-muted-foreground text-sm tabular-nums">
+                          {index + 1}
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <ProfileAvatar profile={profile} />
+                    </TableCell>
+                    <TableCell className="max-w-0">
+                      <p
+                        className="truncate text-sm font-medium"
+                        title={profile.title}
+                      >
+                        {profile.title}
+                      </p>
+                      <p className="text-muted-foreground truncate text-xs">
+                        {getHostname(profile.url)}
+                      </p>
+                    </TableCell>
+                    {isManual && (
+                      <TableCell className="text-right">
+                        <div className="flex justify-end">
+                          <ProfileActions
+                            profile={profile}
+                            onSave={handleProfileSave}
+                            onRemove={setProfileToRemove}
+                          />
+                        </div>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Mobile: cards */}
+          <ul className="space-y-2 md:hidden">
+            {profiles.map((profile, index) => (
+              <li
+                key={profile.url}
+                className={cn(
+                  "rounded-xl border p-3 transition-colors",
+                  isManual && profile.isSelected && "border-primary/40 bg-primary/5"
+                )}
+              >
+                <div className="flex items-start gap-3">
+                  {isManual ? (
+                    <Checkbox
+                      checked={Boolean(profile.isSelected)}
+                      onCheckedChange={() => handleProfileSelect(profile)}
+                      aria-label={`Include ${profile.title} in the analysis`}
+                      className="mt-1"
                     />
                   ) : (
-                    isProfileFormOpen ? "Add Profile" : "Assemble Profile Content"
+                    <span className="text-muted-foreground mt-0.5 w-4 text-sm tabular-nums">
+                      {index + 1}
+                    </span>
                   )}
-                </button>
-              </div>
-            )}
-          </>
+
+                  <ProfileAvatar profile={profile} />
+
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">
+                      {profile.title}
+                    </p>
+                    <p className="text-muted-foreground truncate text-xs">
+                      {getHostname(profile.url)}
+                    </p>
+                  </div>
+                </div>
+
+                {isManual && (
+                  <div className="mt-2 flex justify-end">
+                    <ProfileActions
+                      profile={profile}
+                      onSave={handleProfileSave}
+                      onRemove={setProfileToRemove}
+                    />
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+
+        {isManual && (
+          <CardFooter className="flex-col items-stretch gap-3 border-t sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-muted-foreground text-xs" aria-live="polite">
+              {selectedProfileCount === 0
+                ? "Select at least one profile to continue."
+                : `Content will be pulled from ${selectedProfileCount} profile${
+                    selectedProfileCount === 1 ? "" : "s"
+                  }.`}
+            </p>
+            <Button
+              type="button"
+              size="lg"
+              onClick={handleProfileSubmit}
+              disabled={isSubmitting || selectedProfileCount === 0}
+              className="w-full sm:w-auto"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2Icon className="animate-spin" aria-hidden="true" />
+                  Assembling…
+                </>
+              ) : (
+                "Assemble content"
+              )}
+            </Button>
+          </CardFooter>
         )}
-      </div>
-    </div>
+      </Card>
+
+      {/* Remove confirmation */}
+      <AlertDialog
+        open={Boolean(profileToRemove)}
+        onOpenChange={(open) => !open && setProfileToRemove(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove this profile?</AlertDialogTitle>
+            <AlertDialogDescription>
+              &ldquo;{profileToRemove?.title}&rdquo; will be taken out of the
+              list and will not be used in the analysis.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                removeProfile(profileToRemove);
+                setProfileToRemove(null);
+              }}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 

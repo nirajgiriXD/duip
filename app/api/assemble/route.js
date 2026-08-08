@@ -3,18 +3,34 @@
  */
 import { getSearchResultContent } from "@utilities";
 
-export const POST = async (req, res) => {
-  const { profiles } = await req.json();
+export const runtime = "nodejs";
+export const maxDuration = 300;
 
-  // Summarize search result.
-  const profileContent = await getSearchResultContent(profiles);
+export const POST = async (request) => {
+  try {
+    const { profiles } = await request.json();
 
-  // Prepare response.
-  const response = {
-    profileContent: profileContent,
-  };
+    if (!Array.isArray(profiles) || profiles.length === 0) {
+      return Response.json(
+        { message: "Select at least one profile before assembling content." },
+        { status: 400 }
+      );
+    }
 
-  return new Response(JSON.stringify(response), {
-    status: 200,
-  });
+    // Crawl each selected profile and collect its readable content.
+    const profileContent = await getSearchResultContent(profiles);
+
+    return Response.json({ profileContent: profileContent });
+  } catch (error) {
+    console.error("Assembling profile content failed:", error);
+
+    return Response.json(
+      {
+        message:
+          error?.message ||
+          "The profile content could not be assembled. Please try again.",
+      },
+      { status: 500 }
+    );
+  }
 };
